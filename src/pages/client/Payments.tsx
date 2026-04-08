@@ -6,6 +6,10 @@ import { collection, query, where, onSnapshot, addDoc, updateDoc, doc } from 'fi
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Elements } from '@stripe/react-stripe-js';
+import { getStripe } from '../../services/stripe';
+import StripePaymentForm from '../../components/StripePaymentForm';
+import { generateInvoicePDF } from '../../services/pdfGenerator';
 
 interface Invoice {
   id: string;
@@ -64,29 +68,20 @@ export default function ClientPayments() {
     return true;
   });
 
+  const [showStripeForm, setShowStripeForm] = useState(false);
+
   const handlePayment = async () => {
     if (!selectedInvoice || !paymentMethod || !user) return;
+
+    if (paymentMethod === 'carta' || paymentMethod === 'paypal') {
+      setShowStripeForm(true);
+      return;
+    }
 
     setIsProcessing(true);
 
     try {
-      if (paymentMethod === 'carta' || paymentMethod === 'paypal') {
-        toast.info('Reindirizzamento al gateway di pagamento...');
-        // Mocking the payment process
-        setTimeout(async () => {
-          await addDoc(collection(db, 'payments'), {
-            invoice_id: selectedInvoice.id,
-            amount: selectedInvoice.total_amount,
-            payment_method: paymentMethod,
-            status: 'pending',
-            created_at: new Date().toISOString()
-          });
-          
-          toast.success('Pagamento avviato con successo');
-          setSelectedInvoice(null);
-          setIsProcessing(false);
-        }, 1500);
-      } else if (paymentMethod === 'bonifico') {
+      if (paymentMethod === 'bonifico') {
         await addDoc(collection(db, 'payments'), {
           invoice_id: selectedInvoice.id,
           amount: selectedInvoice.total_amount,
@@ -228,7 +223,10 @@ export default function ClientPayments() {
                     PAGA ORA
                   </button>
                 ) : invoice.status === 'pagata' ? (
-                  <button className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 rounded-lg h-12 font-medium hover:bg-slate-50 active:scale-95 transition-all">
+                  <button 
+                    onClick={() => generateInvoicePDF(invoice)}
+                    className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 rounded-lg h-12 font-medium hover:bg-slate-50 active:scale-95 transition-all"
+                  >
                     <Download className="w-5 h-5" />
                     Scarica Ricevuta
                   </button>
@@ -248,13 +246,25 @@ export default function ClientPayments() {
         <>
           <div 
             className="fixed inset-0 bg-slate-900/60 z-50 transition-opacity"
-            onClick={() => !isProcessing && setSelectedInvoice(null)}
+            onClick={() => {
+              if (!isProcessing) {
+                setSelectedInvoice(null);
+                setShowStripeForm(false);
+              }
+            }}
           />
           <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50 p-6 shadow-2xl transform transition-transform animate-in slide-in-from-bottom-full duration-300">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-slate-900">Scegli metodo di pagamento</h3>
+              <h3 className="text-lg font-bold text-slate-900">
+                {showStripeForm ? 'Inserisci i dati della carta' : 'Scegli metodo di pagamento'}
+              </h3>
               <button 
-                onClick={() => !isProcessing && setSelectedInvoice(null)}
+                onClick={() => {
+                  if (!isProcessing) {
+                    setSelectedInvoice(null);
+                    setShowStripeForm(false);
+                  }
+                }}
                 className="p-2 text-slate-400 hover:text-slate-600 rounded-full bg-slate-50"
                 disabled={isProcessing}
               >
@@ -262,101 +272,116 @@ export default function ClientPayments() {
               </button>
             </div>
 
-            <div className="space-y-3 mb-6">
-              <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'carta' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
-                <input 
-                  type="radio" 
-                  name="payment_method" 
-                  value="carta" 
-                  checked={paymentMethod === 'carta'}
-                  onChange={() => setPaymentMethod('carta')}
-                  className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+            {showStripeForm ? (
+              <Elements stripe={getStripe()}>
+                <StripePaymentForm 
+                  invoice={selectedInvoice} 
+                  onSuccess={() => {
+                    setSelectedInvoice(null);
+                    setShowStripeForm(false);
+                  }}
+                  onCancel={() => setShowStripeForm(false)}
                 />
-                <div className="ml-3 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
-                    <CreditCard className="w-5 h-5 text-slate-600" />
-                  </div>
-                  <span className="font-medium text-slate-900">Carta di Credito / Debito</span>
-                </div>
-              </label>
-
-              <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
-                <input 
-                  type="radio" 
-                  name="payment_method" 
-                  value="paypal" 
-                  checked={paymentMethod === 'paypal'}
-                  onChange={() => setPaymentMethod('paypal')}
-                  className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
-                />
-                <div className="ml-3 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#003087] rounded-lg flex items-center justify-center shadow-sm">
-                    <span className="text-white font-bold italic text-lg">P</span>
-                  </div>
-                  <span className="font-medium text-slate-900">PayPal</span>
-                </div>
-              </label>
-
-              <label className={`flex flex-col border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bonifico' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
-                <div className="flex items-center p-4" onClick={() => setPaymentMethod('bonifico')}>
-                  <input 
-                    type="radio" 
-                    name="payment_method" 
-                    value="bonifico" 
-                    checked={paymentMethod === 'bonifico'}
-                    onChange={() => setPaymentMethod('bonifico')}
-                    className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
-                  />
-                  <div className="ml-3 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
-                      <FileText className="w-5 h-5 text-slate-600" />
-                    </div>
-                    <span className="font-medium text-slate-900">Bonifico Bancario</span>
-                  </div>
-                </div>
-                
-                {paymentMethod === 'bonifico' && (
-                  <div className="px-4 pb-4 pt-2 border-t border-sky-100">
-                    <div className="bg-white p-4 rounded-lg border border-sky-100 space-y-3">
-                      <div>
-                        <p className="text-xs text-slate-500 mb-1">Intestatario</p>
-                        <p className="text-sm font-medium text-slate-900">M&C Elaborazioni e Consulenze Aziendali Srl</p>
+              </Elements>
+            ) : (
+              <>
+                <div className="space-y-3 mb-6">
+                  <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'carta' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                    <input 
+                      type="radio" 
+                      name="payment_method" 
+                      value="carta" 
+                      checked={paymentMethod === 'carta'}
+                      onChange={() => setPaymentMethod('carta')}
+                      className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                    />
+                    <div className="ml-3 flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
+                        <CreditCard className="w-5 h-5 text-slate-600" />
                       </div>
-                      <div>
-                        <p className="text-xs text-slate-500 mb-1">IBAN</p>
-                        <div className="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100">
-                          <p className="text-sm font-mono font-medium text-slate-900">IT00 A000 0000 0000 0000 0000 000</p>
-                          <button 
-                            onClick={(e) => { e.preventDefault(); copyToClipboard('IT00A0000000000000000000000'); }}
-                            className="p-1.5 text-sky-600 hover:bg-sky-50 rounded"
-                          >
-                            <Copy className="w-4 h-4" />
-                          </button>
+                      <span className="font-medium text-slate-900">Carta di Credito / Debito</span>
+                    </div>
+                  </label>
+
+                  <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                    <input 
+                      type="radio" 
+                      name="payment_method" 
+                      value="paypal" 
+                      checked={paymentMethod === 'paypal'}
+                      onChange={() => setPaymentMethod('paypal')}
+                      className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                    />
+                    <div className="ml-3 flex items-center gap-3">
+                      <div className="w-10 h-10 bg-[#003087] rounded-lg flex items-center justify-center shadow-sm">
+                        <span className="text-white font-bold italic text-lg">P</span>
+                      </div>
+                      <span className="font-medium text-slate-900">PayPal</span>
+                    </div>
+                  </label>
+
+                  <label className={`flex flex-col border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bonifico' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                    <div className="flex items-center p-4" onClick={() => setPaymentMethod('bonifico')}>
+                      <input 
+                        type="radio" 
+                        name="payment_method" 
+                        value="bonifico" 
+                        checked={paymentMethod === 'bonifico'}
+                        onChange={() => setPaymentMethod('bonifico')}
+                        className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                      />
+                      <div className="ml-3 flex items-center gap-3">
+                        <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
+                          <FileText className="w-5 h-5 text-slate-600" />
+                        </div>
+                        <span className="font-medium text-slate-900">Bonifico Bancario</span>
+                      </div>
+                    </div>
+                    
+                    {paymentMethod === 'bonifico' && (
+                      <div className="px-4 pb-4 pt-2 border-t border-sky-100">
+                        <div className="bg-white p-4 rounded-lg border border-sky-100 space-y-3">
+                          <div>
+                            <p className="text-xs text-slate-500 mb-1">Intestatario</p>
+                            <p className="text-sm font-medium text-slate-900">M&C Elaborazioni e Consulenze Aziendali Srl</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-500 mb-1">IBAN</p>
+                            <div className="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100">
+                              <p className="text-sm font-mono font-medium text-slate-900">IT00 A000 0000 0000 0000 0000 000</p>
+                              <button 
+                                onClick={(e) => { e.preventDefault(); copyToClipboard('IT00A0000000000000000000000'); }}
+                                className="p-1.5 text-sky-600 hover:bg-sky-50 rounded"
+                              >
+                                <Copy className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-500 mb-1">Causale</p>
+                            <p className="text-sm font-medium text-slate-900">Parcella {selectedInvoice.invoice_number}</p>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <p className="text-xs text-slate-500 mb-1">Causale</p>
-                        <p className="text-sm font-medium text-slate-900">Parcella {selectedInvoice.invoice_number}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </label>
-            </div>
+                    )}
+                  </label>
+                </div>
 
-            <button 
-              onClick={handlePayment}
-              disabled={!paymentMethod || isProcessing}
-              className="w-full bg-sky-500 text-white rounded-xl h-14 font-semibold hover:bg-sky-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {isProcessing ? (
-                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : paymentMethod === 'bonifico' ? (
-                'Ho effettuato il bonifico'
-              ) : (
-                `Paga € ${selectedInvoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`
-              )}
-            </button>
+                <button 
+                  onClick={handlePayment}
+                  disabled={!paymentMethod || isProcessing}
+                  className="w-full bg-sky-500 text-white rounded-xl h-14 font-semibold hover:bg-sky-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isProcessing ? (
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : paymentMethod === 'bonifico' ? (
+                    'Ho effettuato il bonifico'
+                  ) : (
+                    `Procedi al pagamento di € ${selectedInvoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`
+                  )}
+                </button>
+              </>
+            )}
           </div>
         </>
       )}

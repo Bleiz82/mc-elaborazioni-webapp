@@ -37,98 +37,98 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-500 text-sm mt-1">Panoramica delle attività dello studio</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Panoramica delle attività dello studio</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">Fatturato Mensile</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">€ 12.450</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fatturato Mensile</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">€ 12.450</p>
             </div>
-            <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-emerald-600" />
+            <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-emerald-600 font-medium flex items-center">
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center">
               +12.5%
             </span>
-            <span className="text-slate-400 ml-2">vs mese scorso</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-2">vs mese scorso</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">Clienti Attivi</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">142</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Clienti Attivi</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">142</p>
             </div>
-            <div className="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center">
-              <Users className="w-6 h-6 text-sky-600" />
+            <div className="w-12 h-12 bg-sky-100 dark:bg-sky-900/30 rounded-full flex items-center justify-center">
+              <Users className="w-6 h-6 text-sky-600 dark:text-sky-400" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-emerald-600 font-medium flex items-center">
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center">
               +3
             </span>
-            <span className="text-slate-400 ml-2">nuovi questo mese</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-2">nuovi questo mese</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">Pratiche in Lavorazione</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">38</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Pratiche in Lavorazione</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">38</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
-              <Kanban className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
+              <Kanban className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="w-full bg-slate-100 rounded-full h-1.5">
+            <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
               <div className="bg-indigo-500 h-1.5 rounded-full" style={{ width: '65%' }}></div>
             </div>
-            <p className="text-xs text-slate-500 mt-2">65% completamento medio</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">65% completamento medio</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">Pagamenti in Attesa</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">12</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Pagamenti in Attesa</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">12</p>
             </div>
-            <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+              <CreditCard className="w-6 h-6 text-amber-600 dark:text-amber-400" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-amber-600 font-medium">
+            <span className="text-amber-600 dark:text-amber-400 font-medium">
               € 3.240
             </span>
-            <span className="text-slate-400 ml-2">da incassare</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-2">da incassare</span>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chart */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Entrate Ultimi 6 Mesi</h2>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50 lg:col-span-2">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Entrate Ultimi 6 Mesi</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" strokeOpacity={0.2} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
                 <Tooltip 
-                  cursor={{ fill: '#f1f5f9' }}
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#1e293b', color: '#f8fafc' }}
                 />
                 <Bar dataKey="entrate" fill="#0EA5E9" radius={[4, 4, 0, 0]} maxBarSize={40} />
               </BarChart>
@@ -137,24 +137,24 @@ export default function AdminDashboard() {
         </div>
 
         {/* Deadlines */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-slate-900">Prossime Scadenze</h2>
-            <button className="text-sm text-sky-600 hover:text-sky-700 font-medium">Vedi tutte</button>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Prossime Scadenze</h2>
+            <button className="text-sm text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium">Vedi tutte</button>
           </div>
           <div className="space-y-4">
             {upcomingDeadlines.map((deadline) => (
-              <div key={deadline.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+              <div key={deadline.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700">
                 <div className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${
                   deadline.priority === 'alta' ? 'bg-red-500' : 
                   deadline.priority === 'media' ? 'bg-amber-500' : 'bg-emerald-500'
                 }`} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900 truncate">{deadline.title}</p>
-                  <p className="text-xs text-slate-500 truncate">{deadline.client}</p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{deadline.title}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{deadline.client}</p>
                 </div>
                 <div className="text-right">
-                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                     {deadline.date}
                   </span>
                 </div>
@@ -166,20 +166,20 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activity */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Attività Recenti</h2>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Attività Recenti</h2>
           <div className="space-y-4">
             {recentActivities.map((activity) => (
               <div key={activity.id} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  {activity.type === 'doc' && <FolderOpen className="w-4 h-4 text-slate-500" />}
-                  {activity.type === 'payment' && <CreditCard className="w-4 h-4 text-slate-500" />}
-                  {activity.type === 'practice' && <CheckCircle2 className="w-4 h-4 text-slate-500" />}
-                  {activity.type === 'ai' && <Bot className="w-4 h-4 text-slate-500" />}
+                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  {activity.type === 'doc' && <FolderOpen className="w-4 h-4 text-slate-500 dark:text-slate-400" />}
+                  {activity.type === 'payment' && <CreditCard className="w-4 h-4 text-slate-500 dark:text-slate-400" />}
+                  {activity.type === 'practice' && <CheckCircle2 className="w-4 h-4 text-slate-500 dark:text-slate-400" />}
+                  {activity.type === 'ai' && <Bot className="w-4 h-4 text-slate-500 dark:text-slate-400" />}
                 </div>
                 <div>
-                  <p className="text-sm text-slate-700">{activity.text}</p>
-                  <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">{activity.text}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {activity.time}
                   </p>
                 </div>
@@ -189,24 +189,24 @@ export default function AdminDashboard() {
         </div>
 
         {/* AI Agents Status */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-slate-900">Stato Subagenti AI</h2>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Stato Subagenti AI</h2>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400">
               Tutti Operativi
             </span>
           </div>
           <div className="space-y-3">
             {aiAgents.map((agent) => (
-              <div key={agent.id} className="p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+              <div key={agent.id} className="p-3 rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${agent.color}`} />
-                    <span className="text-sm font-medium text-slate-900">{agent.name}</span>
+                    <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{agent.name}</span>
                   </div>
-                  <span className="text-xs text-emerald-600 font-medium">Attivo</span>
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Attivo</span>
                 </div>
-                <p className="text-xs text-slate-500 font-mono ml-4">{`> ${agent.log}`}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-mono ml-4">{`> ${agent.log}`}</p>
               </div>
             ))}
           </div>

@@ -25,6 +25,9 @@ const navigation = [
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
+import NotificationBell from '../components/NotificationBell';
+import ThemeToggle from '../components/ThemeToggle';
+
 export default function AdminLayout() {
   const { profile } = useAuth();
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -58,10 +61,10 @@ export default function AdminLayout() {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col",
+        "fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 dark:bg-slate-950 text-slate-300 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col border-r border-transparent dark:border-slate-800",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <div className="flex items-center justify-between h-16 px-4 bg-slate-950">
+        <div className="flex items-center justify-between h-16 px-4 bg-slate-950 dark:bg-slate-950/50">
           <div className="flex items-center gap-3">
             <div className="bg-sky-500 p-1.5 rounded-lg">
               <Building2 className="w-5 h-5 text-white" />
@@ -121,17 +124,23 @@ export default function AdminLayout() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="bg-white border-b border-slate-200 h-16 flex items-center px-4 lg:hidden">
-          <button 
-            onClick={() => setSidebarOpen(true)}
-            className="text-slate-500 hover:text-slate-700"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-          <span className="ml-4 font-semibold text-slate-900">M&C Elaborazioni</span>
+        <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-4">
+          <div className="flex items-center">
+            <button 
+              onClick={() => setSidebarOpen(true)}
+              className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 lg:hidden"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <span className="ml-4 font-semibold text-slate-900 dark:text-white lg:hidden">M&C Elaborazioni</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <NotificationBell />
+          </div>
         </header>
         
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 dark:bg-slate-900">
           <Outlet />
         </main>
       </div>

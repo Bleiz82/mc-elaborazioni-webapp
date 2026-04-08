@@ -8,13 +8,37 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts';
 import { toast } from 'sonner';
+import { generateReportPDF, generateCSV } from '../../services/pdfGenerator';
 
 export default function AdminReports() {
   const [dateRange, setDateRange] = useState('questo_mese');
 
   const handleExport = (format: 'pdf' | 'csv') => {
     toast.success(`Esportazione in ${format.toUpperCase()} avviata`);
-    // In a real app, this would trigger a cloud function to generate the report
+    
+    const reportData = {
+      kpi: {
+        revenue: 45200,
+        completedPractices: 284,
+        newClients: 12
+      },
+      content: "Questo report riassume le performance dello studio nel periodo selezionato. Il fatturato mostra un trend positivo rispetto al periodo precedente. Il tasso di completamento delle pratiche si mantiene alto (98% scadenze rispettate)."
+    };
+
+    if (format === 'pdf') {
+      generateReportPDF(reportData, dateRange.replace('_', ' '));
+    } else {
+      // CSV Export
+      const csvData = [
+        { indicatore: 'Fatturato Totale', valore: 45200 },
+        { indicatore: 'Pratiche Completate', valore: 284 },
+        { indicatore: 'Nuovi Clienti', valore: 12 }
+      ];
+      generateCSV(csvData, [
+        { key: 'indicatore', label: 'Indicatore' },
+        { key: 'valore', label: 'Valore' }
+      ], `Report_${dateRange}`);
+    }
   };
 
   // Mock Data for Charts

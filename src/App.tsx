@@ -27,6 +27,8 @@ import ClientDocuments from './pages/client/Documents';
 import ClientDeadlines from './pages/client/Deadlines';
 import ClientPayments from './pages/client/Payments';
 import ClientChat from './pages/client/Chat';
+import ClientProfile from './pages/client/Profile';
+import Onboarding from './pages/auth/Onboarding';
 
 // Placeholder pages
 const Placeholder = ({ title }: { title: string }) => (
@@ -36,7 +38,7 @@ const Placeholder = ({ title }: { title: string }) => (
   </div>
 );
 
-const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles: string[] }) => {
+const ProtectedRoute = ({ children, allowedRoles, requireOnboarding = true }: { children: React.ReactNode, allowedRoles: string[], requireOnboarding?: boolean }) => {
   const { user, profile, loading } = useAuth();
 
   if (loading) {
@@ -51,6 +53,10 @@ const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode,
     return <Navigate to={profile.role === 'client' ? '/client/home' : '/admin/dashboard'} replace />;
   }
 
+  if (profile.role === 'client' && requireOnboarding && !profile.onboarding_completed) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   return <>{children}</>;
 };
 
@@ -61,7 +67,10 @@ const RootRedirect = () => {
   
   if (!user || !profile) return <Navigate to="/login" replace />;
   
-  if (profile.role === 'client') return <Navigate to="/client/home" replace />;
+  if (profile.role === 'client') {
+    if (!profile.onboarding_completed) return <Navigate to="/onboarding" replace />;
+    return <Navigate to="/client/home" replace />;
+  }
   return <Navigate to="/admin/dashboard" replace />;
 };
 
@@ -72,6 +81,11 @@ export default function App() {
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/onboarding" element={
+            <ProtectedRoute allowedRoles={['client']} requireOnboarding={false}>
+              <Onboarding />
+            </ProtectedRoute>
+          } />
           
           {/* Admin Routes */}
           <Route path="/admin" element={
@@ -105,7 +119,7 @@ export default function App() {
             <Route path="payments" element={<ClientPayments />} />
             <Route path="practices" element={<Placeholder title="Le Mie Pratiche" />} />
             <Route path="chat" element={<ClientChat />} />
-            <Route path="profile" element={<Placeholder title="Profilo" />} />
+            <Route path="profile" element={<ClientProfile />} />
           </Route>
         </Routes>
         <Toaster position="top-right" richColors />

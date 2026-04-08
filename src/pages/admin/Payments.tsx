@@ -10,6 +10,7 @@ import { format, parseISO, startOfMonth, endOfMonth, subMonths, isSameMonth, isB
 import { it } from 'date-fns/locale';
 import { toast } from 'sonner';
 import clsx from 'clsx';
+import { generateInvoicePDF, generateCSV } from '../../services/pdfGenerator';
 
 interface Invoice {
   id: string;
@@ -285,13 +286,29 @@ export default function AdminPayments() {
           <h1 className="text-2xl font-bold text-slate-900">Pagamenti e Parcelle</h1>
           <p className="text-slate-500 text-sm mt-1">Gestisci la fatturazione e gli incassi dello studio</p>
         </div>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center px-4 py-2 bg-sky-500 text-white rounded-lg font-medium hover:bg-sky-600 transition-colors"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Nuova Parcella
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => generateCSV(invoices, [
+              { key: 'invoice_number', label: 'Numero' },
+              { key: 'client_name', label: 'Cliente' },
+              { key: 'description', label: 'Descrizione' },
+              { key: 'total_amount', label: 'Totale' },
+              { key: 'status', label: 'Stato' },
+              { key: 'due_date', label: 'Scadenza' }
+            ], 'Parcelle')}
+            className="inline-flex items-center justify-center px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+          >
+            <Download className="w-5 h-5 mr-2" />
+            Esporta CSV
+          </button>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center justify-center px-4 py-2 bg-sky-500 text-white rounded-lg font-medium hover:bg-sky-600 transition-colors"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Nuova Parcella
+          </button>
+        </div>
       </div>
 
       {/* KPIs */}
@@ -431,9 +448,16 @@ export default function AdminPayments() {
                     <td className="px-6 py-4 font-bold text-slate-900">€ {invoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</td>
                     <td className="px-6 py-4 text-slate-600">{format(parseISO(invoice.due_date), 'dd MMM yyyy', { locale: it })}</td>
                     <td className="px-6 py-4">
-                      <span className={clsx("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize", getStatusColor(invoice.status))}>
-                        {invoice.status.replace('_', ' ')}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span className={clsx("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize w-fit", getStatusColor(invoice.status))}>
+                          {invoice.status.replace('_', ' ')}
+                        </span>
+                        {invoice.status === 'pagata' && invoice.payment_method && (
+                          <span className="text-xs text-slate-500 capitalize">
+                            via {invoice.payment_method}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -447,7 +471,7 @@ export default function AdminPayments() {
                             </button>
                           </>
                         )}
-                        <button className="p-1.5 text-slate-400 hover:text-sky-600 transition-colors" title="Scarica PDF">
+                        <button onClick={() => generateInvoicePDF(invoice)} className="p-1.5 text-slate-400 hover:text-sky-600 transition-colors" title="Scarica PDF">
                           <Download className="w-4 h-4" />
                         </button>
                         <button onClick={() => handleDelete(invoice.id)} className="p-1.5 text-slate-400 hover:text-red-600 transition-colors" title="Elimina">

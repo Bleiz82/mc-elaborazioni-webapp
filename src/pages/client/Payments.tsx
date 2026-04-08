@@ -1,0 +1,365 @@
+import { useState, useEffect } from 'react';
+import { CreditCard, Download, FileText, X, Copy, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../../lib/AuthContext';
+import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
+import { collection, query, where, onSnapshot, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { toast } from 'sonner';
+import { format } from 'date-fns';
+import { it } from 'date-fns/locale';
+
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  client_id: string;
+  description: string;
+  amount: number;
+  total_amount: number;
+  status: 'da_pagare' | 'in_elaborazione' | 'pagata' | 'scaduta' | 'rateizzata';
+  due_date: string;
+}
+
+export default function ClientPayments() {
+  const { user } = useAuth();
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'da_pagare' | 'pagate' | 'tutte'>('da_pagare');
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'carta' | 'paypal' | 'bonifico' | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const q = query(
+      collection(db, 'invoices'),
+      where('client_id', '==', user.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const invoicesData: Invoice[] = [];
+      snapshot.forEach((doc) => {
+        invoicesData.push({ id: doc.id, ...doc.data() } as Invoice);
+      });
+      // Sort by due date descending
+      invoicesData.sort((a, b) => new Date(b.due_date).getTime() - new Date(a.due_date).getTime());
+      setInvoices(invoicesData);
+      setLoading(false);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'invoices');
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+  const totalToPay = invoices
+    .filter(i => i.status === 'da_pagare' || i.status === 'scaduta')
+    .reduce((sum, i) => sum + i.total_amount, 0);
+
+  const dueCount = invoices.filter(i => i.status === 'da_pagare' || i.status === 'scaduta').length;
+
+  const filteredInvoices = invoices.filter(i => {
+    if (activeTab === 'da_pagare') return i.status === 'da_pagare' || i.status === 'scaduta';
+    if (activeTab === 'pagate') return i.status === 'pagata';
+    return true;
+  });
+
+  const handlePayment = async () => {
+    if (!selectedInvoice || !paymentMethod || !user) return;
+
+    setIsProcessing(true);
+
+    try {
+      if (paymentMethod === 'carta' || paymentMethod === 'paypal') {
+        toast.info('Reindirizzamento al gateway di pagamento...');
+        // Mocking the payment process
+        setTimeout(async () => {
+          await addDoc(collection(db, 'payments'), {
+            invoice_id: selectedInvoice.id,
+            amount: selectedInvoice.total_amount,
+            payment_method: paymentMethod,
+            status: 'pending',
+            created_at: new Date().toISOString()
+          });
+          
+          toast.success('Pagamento avviato con successo');
+          setSelectedInvoice(null);
+          setIsProcessing(false);
+        }, 1500);
+      } else if (paymentMethod === 'bonifico') {
+        await addDoc(collection(db, 'payments'), {
+          invoice_id: selectedInvoice.id,
+          amount: selectedInvoice.total_amount,
+          payment_method: 'bonifico',
+          status: 'pending',
+          created_at: new Date().toISOString()
+        });
+
+        await updateDoc(doc(db, 'invoices', selectedInvoice.id), {
+          status: 'in_elaborazione'
+        });
+
+        // Create notification for admin
+        await addDoc(collection(db, 'notifications'), {
+          user_id: 'admin', // In a real app, this would target admins
+          title: 'Nuovo Bonifico Segnalato',
+          message: `Il cliente ha segnalato un bonifico per la parcella #${selectedInvoice.invoice_number}`,
+          type: 'pagamento',
+          is_read: false,
+          created_at: new Date().toISOString()
+        });
+
+        toast.success('Notifica inviata allo studio');
+        setSelectedInvoice(null);
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error('Errore durante l\'elaborazione del pagamento');
+      setIsProcessing(false);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('IBAN copiato negli appunti');
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'da_pagare':
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Da Pagare</span>;
+      case 'in_elaborazione':
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">In Elaborazione</span>;
+      case 'pagata':
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800">Pagata</span>;
+      case 'scaduta':
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Scaduta</span>;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="space-y-6 pb-20">
+      {/* Summary Card */}
+      <div className="bg-gradient-to-br from-[#1E3A5F] to-[#0EA5E9] rounded-2xl p-6 text-white shadow-lg">
+        <p className="text-sky-100 text-sm font-medium mb-1">Totale da pagare</p>
+        <h2 className="text-4xl font-bold mb-2">€ {totalToPay.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</h2>
+        <p className="text-sky-200 text-sm">{dueCount} {dueCount === 1 ? 'parcella' : 'parcelle'} in scadenza</p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex border-b border-slate-200">
+        <button 
+          onClick={() => setActiveTab('da_pagare')}
+          className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
+            activeTab === 'da_pagare' ? 'border-sky-500 text-sky-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          Da Pagare
+        </button>
+        <button 
+          onClick={() => setActiveTab('pagate')}
+          className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
+            activeTab === 'pagate' ? 'border-sky-500 text-sky-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          Pagate
+        </button>
+        <button 
+          onClick={() => setActiveTab('tutte')}
+          className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
+            activeTab === 'tutte' ? 'border-sky-500 text-sky-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          Tutte
+        </button>
+      </div>
+
+      {/* Invoices List */}
+      <div>
+        {loading ? (
+          <div className="space-y-4">
+            {[1, 2].map(i => (
+              <div key={i} className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm animate-pulse">
+                <div className="h-4 bg-slate-200 rounded w-1/3 mb-3"></div>
+                <div className="h-3 bg-slate-200 rounded w-2/3 mb-4"></div>
+                <div className="flex justify-between items-center">
+                  <div className="h-3 bg-slate-200 rounded w-1/4"></div>
+                  <div className="h-5 bg-slate-200 rounded w-1/4"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredInvoices.length === 0 ? (
+          <div className="bg-white p-8 rounded-xl border border-slate-100 shadow-sm text-center">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <FileText className="w-8 h-8 text-slate-300" />
+            </div>
+            <p className="text-slate-500 text-sm">Nessuna parcella trovata</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredInvoices.map(invoice => (
+              <div key={invoice.id} className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-sm font-bold text-slate-900">Parcella #{invoice.invoice_number}</span>
+                  {getStatusBadge(invoice.status)}
+                </div>
+                <p className="text-sm text-slate-600 mb-4">{invoice.description}</p>
+                <div className="flex justify-between items-end mb-4">
+                  <span className="text-xs text-slate-500">
+                    Scadenza: {format(new Date(invoice.due_date), 'dd MMM yyyy', { locale: it })}
+                  </span>
+                  <span className="text-lg font-bold text-slate-900">
+                    € {invoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+                
+                {(invoice.status === 'da_pagare' || invoice.status === 'scaduta') ? (
+                  <button 
+                    onClick={() => {
+                      setSelectedInvoice(invoice);
+                      setPaymentMethod(null);
+                    }}
+                    className="w-full bg-sky-500 text-white rounded-lg h-12 font-semibold hover:bg-sky-600 active:scale-95 transition-all"
+                  >
+                    PAGA ORA
+                  </button>
+                ) : invoice.status === 'pagata' ? (
+                  <button className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 rounded-lg h-12 font-medium hover:bg-slate-50 active:scale-95 transition-all">
+                    <Download className="w-5 h-5" />
+                    Scarica Ricevuta
+                  </button>
+                ) : (
+                  <button disabled className="w-full bg-slate-100 text-slate-400 rounded-lg h-12 font-semibold cursor-not-allowed">
+                    In Elaborazione
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Payment Bottom Sheet */}
+      {selectedInvoice && (
+        <>
+          <div 
+            className="fixed inset-0 bg-slate-900/60 z-50 transition-opacity"
+            onClick={() => !isProcessing && setSelectedInvoice(null)}
+          />
+          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50 p-6 shadow-2xl transform transition-transform animate-in slide-in-from-bottom-full duration-300">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-bold text-slate-900">Scegli metodo di pagamento</h3>
+              <button 
+                onClick={() => !isProcessing && setSelectedInvoice(null)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-full bg-slate-50"
+                disabled={isProcessing}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 mb-6">
+              <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'carta' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                <input 
+                  type="radio" 
+                  name="payment_method" 
+                  value="carta" 
+                  checked={paymentMethod === 'carta'}
+                  onChange={() => setPaymentMethod('carta')}
+                  className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                />
+                <div className="ml-3 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
+                    <CreditCard className="w-5 h-5 text-slate-600" />
+                  </div>
+                  <span className="font-medium text-slate-900">Carta di Credito / Debito</span>
+                </div>
+              </label>
+
+              <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                <input 
+                  type="radio" 
+                  name="payment_method" 
+                  value="paypal" 
+                  checked={paymentMethod === 'paypal'}
+                  onChange={() => setPaymentMethod('paypal')}
+                  className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                />
+                <div className="ml-3 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#003087] rounded-lg flex items-center justify-center shadow-sm">
+                    <span className="text-white font-bold italic text-lg">P</span>
+                  </div>
+                  <span className="font-medium text-slate-900">PayPal</span>
+                </div>
+              </label>
+
+              <label className={`flex flex-col border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bonifico' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                <div className="flex items-center p-4" onClick={() => setPaymentMethod('bonifico')}>
+                  <input 
+                    type="radio" 
+                    name="payment_method" 
+                    value="bonifico" 
+                    checked={paymentMethod === 'bonifico'}
+                    onChange={() => setPaymentMethod('bonifico')}
+                    className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                  />
+                  <div className="ml-3 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
+                      <FileText className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <span className="font-medium text-slate-900">Bonifico Bancario</span>
+                  </div>
+                </div>
+                
+                {paymentMethod === 'bonifico' && (
+                  <div className="px-4 pb-4 pt-2 border-t border-sky-100">
+                    <div className="bg-white p-4 rounded-lg border border-sky-100 space-y-3">
+                      <div>
+                        <p className="text-xs text-slate-500 mb-1">Intestatario</p>
+                        <p className="text-sm font-medium text-slate-900">M&C Elaborazioni e Consulenze Aziendali Srl</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 mb-1">IBAN</p>
+                        <div className="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100">
+                          <p className="text-sm font-mono font-medium text-slate-900">IT00 A000 0000 0000 0000 0000 000</p>
+                          <button 
+                            onClick={(e) => { e.preventDefault(); copyToClipboard('IT00A0000000000000000000000'); }}
+                            className="p-1.5 text-sky-600 hover:bg-sky-50 rounded"
+                          >
+                            <Copy className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 mb-1">Causale</p>
+                        <p className="text-sm font-medium text-slate-900">Parcella {selectedInvoice.invoice_number}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </label>
+            </div>
+
+            <button 
+              onClick={handlePayment}
+              disabled={!paymentMethod || isProcessing}
+              className="w-full bg-sky-500 text-white rounded-xl h-14 font-semibold hover:bg-sky-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {isProcessing ? (
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : paymentMethod === 'bonifico' ? (
+                'Ho effettuato il bonifico'
+              ) : (
+                `Paga € ${selectedInvoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`
+              )}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

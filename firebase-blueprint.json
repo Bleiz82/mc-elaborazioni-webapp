@@ -1,0 +1,332 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile extending Firebase Auth",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "full_name": { "type": "string" },
+        "avatar_url": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "collaborator", "client"] },
+        "phone": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "full_name", "role"]
+    },
+    "StudioSettings": {
+      "title": "Studio Settings",
+      "description": "Global studio configuration",
+      "type": "object",
+      "properties": {
+        "studio_name": { "type": "string" },
+        "logo_url": { "type": "string" },
+        "primary_color": { "type": "string" },
+        "accent_color": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "pec": { "type": "string", "format": "email" },
+        "p_iva": { "type": "string" },
+        "iban": { "type": "string" },
+        "stripe_account_id": { "type": "string" }
+      }
+    },
+    "Client": {
+      "title": "Client",
+      "description": "Client details",
+      "type": "object",
+      "properties": {
+        "profile_id": { "type": "string", "description": "Reference to users collection" },
+        "company_name": { "type": "string" },
+        "client_type": { "type": "string", "enum": ["azienda", "libero_professionista", "privato"] },
+        "status": { "type": "string", "enum": ["attivo", "sospeso", "archiviato"] },
+        "p_iva": { "type": "string" },
+        "codice_fiscale": { "type": "string" },
+        "sdi_code": { "type": "string" },
+        "pec": { "type": "string", "format": "email" },
+        "fiscal_regime": { "type": "string" },
+        "legal_address": { "type": "string" },
+        "city": { "type": "string" },
+        "province": { "type": "string" },
+        "cap": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "primary_contact_name": { "type": "string" },
+        "primary_contact_phone": { "type": "string" },
+        "primary_contact_email": { "type": "string", "format": "email" },
+        "bank_name": { "type": "string" },
+        "iban": { "type": "string" },
+        "notes": { "type": "string" },
+        "start_date": { "type": "string", "format": "date" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["company_name", "client_type", "status"]
+    },
+    "Collaborator": {
+      "title": "Collaborator",
+      "description": "Staff member details",
+      "type": "object",
+      "properties": {
+        "profile_id": { "type": "string", "description": "Reference to users collection" },
+        "role_title": { "type": "string" },
+        "specialization": { "type": "string" },
+        "max_workload": { "type": "number" },
+        "is_active": { "type": "boolean" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["profile_id", "role_title"]
+    },
+    "Practice": {
+      "title": "Practice",
+      "description": "A case or practice being handled",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "client_id": { "type": "string" },
+        "assigned_to": { "type": "string" },
+        "practice_type": { "type": "string", "enum": ["fiscale", "contributiva", "documentale", "societaria", "suape", "sicurezza", "business_plan", "altro"] },
+        "status": { "type": "string", "enum": ["nuova", "in_lavorazione", "in_attesa_cliente", "in_revisione", "completata", "archiviata"] },
+        "priority": { "type": "string", "enum": ["alta", "media", "bassa"] },
+        "due_date": { "type": "string", "format": "date" },
+        "completed_at": { "type": "string", "format": "date-time" },
+        "kanban_order": { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "client_id", "practice_type", "status", "priority"]
+    },
+    "PracticeComment": {
+      "title": "Practice Comment",
+      "description": "Comment on a practice",
+      "type": "object",
+      "properties": {
+        "practice_id": { "type": "string" },
+        "author_id": { "type": "string" },
+        "content": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["practice_id", "author_id", "content"]
+    },
+    "Deadline": {
+      "title": "Deadline",
+      "description": "Important dates and deadlines",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "client_id": { "type": "string" },
+        "practice_id": { "type": "string" },
+        "deadline_type": { "type": "string", "enum": ["fiscale", "contributiva", "documentale", "pagamento", "sicurezza", "altro"] },
+        "due_date": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["da_fare", "in_lavorazione", "completata", "scaduta"] },
+        "priority": { "type": "string", "enum": ["urgente", "alta", "media", "bassa"] },
+        "is_recurring": { "type": "boolean" },
+        "recurrence_rule": { "type": "string" },
+        "reminder_sent": { "type": "boolean" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "deadline_type", "due_date", "status", "priority"]
+    },
+    "Document": {
+      "title": "Document",
+      "description": "Uploaded files",
+      "type": "object",
+      "properties": {
+        "client_id": { "type": "string" },
+        "practice_id": { "type": "string" },
+        "uploaded_by": { "type": "string" },
+        "file_name": { "type": "string" },
+        "file_url": { "type": "string" },
+        "file_type": { "type": "string" },
+        "file_size": { "type": "number" },
+        "category": { "type": "string", "enum": ["fattura", "contratto", "dichiarazione", "bilancio", "busta_paga", "f24", "dvr", "altro"] },
+        "status": { "type": "string", "enum": ["caricato", "in_revisione", "approvato", "da_rifare"] },
+        "admin_note": { "type": "string" },
+        "version": { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["client_id", "uploaded_by", "file_name", "file_url", "status"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Billing invoice",
+      "type": "object",
+      "properties": {
+        "invoice_number": { "type": "string" },
+        "client_id": { "type": "string" },
+        "practice_id": { "type": "string" },
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "vat_rate": { "type": "number" },
+        "total_amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["da_pagare", "in_elaborazione", "pagata", "scaduta", "rateizzata"] },
+        "due_date": { "type": "string", "format": "date" },
+        "paid_at": { "type": "string", "format": "date-time" },
+        "payment_method": { "type": "string", "enum": ["carta", "paypal", "bonifico", "contanti"] },
+        "stripe_payment_intent_id": { "type": "string" },
+        "stripe_invoice_id": { "type": "string" },
+        "installment_plan": { "type": "string" },
+        "pdf_url": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["invoice_number", "client_id", "description", "amount", "total_amount", "status", "due_date"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Payment record",
+      "type": "object",
+      "properties": {
+        "invoice_id": { "type": "string" },
+        "amount": { "type": "number" },
+        "payment_method": { "type": "string" },
+        "stripe_payment_id": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed", "refunded"] },
+        "paid_at": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["invoice_id", "amount", "payment_method", "status"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Chat thread",
+      "type": "object",
+      "properties": {
+        "client_id": { "type": "string" },
+        "subject": { "type": "string" },
+        "last_message_at": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["client_id"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Chat message",
+      "type": "object",
+      "properties": {
+        "conversation_id": { "type": "string" },
+        "sender_id": { "type": "string" },
+        "content": { "type": "string" },
+        "is_read": { "type": "boolean" },
+        "is_automated": { "type": "boolean" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["conversation_id", "sender_id", "content"]
+    },
+    "AISubagent": {
+      "title": "AI Subagent",
+      "description": "AI agent configuration",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "description": { "type": "string" },
+        "icon_color": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "paused", "error"] },
+        "config": { "type": "string" },
+        "endpoint_url": { "type": "string" },
+        "api_provider": { "type": "string", "enum": ["claude", "openai", "gemini", "n8n", "custom"] },
+        "actions_today": { "type": "number" },
+        "performance_score": { "type": "number" },
+        "last_action_at": { "type": "string", "format": "date-time" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "slug", "status"]
+    },
+    "AIActivityLog": {
+      "title": "AI Activity Log",
+      "description": "Log of AI actions",
+      "type": "object",
+      "properties": {
+        "subagent_id": { "type": "string" },
+        "action_type": { "type": "string" },
+        "description": { "type": "string" },
+        "client_id": { "type": "string" },
+        "practice_id": { "type": "string" },
+        "metadata": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["subagent_id", "action_type", "description"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User notification",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["scadenza", "pagamento", "documento", "pratica", "comunicazione", "sistema"] },
+        "is_read": { "type": "boolean" },
+        "link_to": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["user_id", "title", "message"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/settings/studio": {
+      "schema": { "$ref": "#/entities/StudioSettings" },
+      "description": "Global studio settings"
+    },
+    "/clients/{clientId}": {
+      "schema": { "$ref": "#/entities/Client" },
+      "description": "Clients"
+    },
+    "/collaborators/{collaboratorId}": {
+      "schema": { "$ref": "#/entities/Collaborator" },
+      "description": "Collaborators"
+    },
+    "/practices/{practiceId}": {
+      "schema": { "$ref": "#/entities/Practice" },
+      "description": "Practices/Cases"
+    },
+    "/practices/{practiceId}/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/PracticeComment" },
+      "description": "Comments on practices"
+    },
+    "/deadlines/{deadlineId}": {
+      "schema": { "$ref": "#/entities/Deadline" },
+      "description": "Deadlines"
+    },
+    "/documents/{documentId}": {
+      "schema": { "$ref": "#/entities/Document" },
+      "description": "Uploaded documents"
+    },
+    "/invoices/{invoiceId}": {
+      "schema": { "$ref": "#/entities/Invoice" },
+      "description": "Invoices"
+    },
+    "/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/Payment" },
+      "description": "Payments"
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Conversations"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Messages in a conversation"
+    },
+    "/ai_subagents/{subagentId}": {
+      "schema": { "$ref": "#/entities/AISubagent" },
+      "description": "AI Subagents"
+    },
+    "/ai_activity_log/{logId}": {
+      "schema": { "$ref": "#/entities/AIActivityLog" },
+      "description": "AI Activity Logs"
+    },
+    "/users/{userId}/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User notifications"
+    }
+  }
+}

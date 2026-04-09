@@ -1,7 +1,7 @@
 import { db } from '../../../lib/firebase';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { getAIProvider } from '../aiProvider';
-import { logActivity } from '../utils';
+import { logActivity, getAdminUID } from '../utils';
 
 export async function runAgentReport(params: any) {
   const { type = 'weekly' } = params; // 'weekly' or 'monthly'
@@ -32,6 +32,7 @@ export async function runAgentReport(params: any) {
     };
 
     const aiProvider = await getAIProvider();
+    const adminUID = await getAdminUID();
     const prompt = `Sei l'analista AI dello studio M&C Elaborazioni e Consulenze Aziendali.
 Genera un report ${type === 'weekly' ? 'settimanale' : 'mensile'} basato su questi dati:
 ${JSON.stringify(rawData, null, 2)}
@@ -57,7 +58,7 @@ Scrivi in italiano, tono professionale ma chiaro. Usa formattazione markdown.`;
     });
 
     await addDoc(collection(db, 'notifications'), {
-      user_id: 'admin',
+      user_id: adminUID,
       title: 'Nuovo Report AI',
       message: `Il report ${type === 'weekly' ? 'settimanale' : 'mensile'} è pronto per essere visualizzato.`,
       type: 'system',

@@ -30,6 +30,8 @@ import ClientChat from './pages/client/Chat';
 import ClientProfile from './pages/client/Profile';
 import Onboarding from './pages/auth/Onboarding';
 
+import ClientPractices from './pages/client/Practices';
+
 // Placeholder pages
 const Placeholder = ({ title }: { title: string }) => (
   <div className="p-8">
@@ -117,7 +119,7 @@ export default function App() {
             <Route path="documents" element={<ClientDocuments />} />
             <Route path="deadlines" element={<ClientDeadlines />} />
             <Route path="payments" element={<ClientPayments />} />
-            <Route path="practices" element={<Placeholder title="Le Mie Pratiche" />} />
+            <Route path="practices" element={<ClientPractices />} />
             <Route path="chat" element={<ClientChat />} />
             <Route path="profile" element={<ClientProfile />} />
           </Route>

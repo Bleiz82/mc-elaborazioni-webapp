@@ -9,6 +9,7 @@ interface UserProfile {
   full_name: string;
   avatar_url?: string;
   role: 'admin' | 'collaborator' | 'client';
+  onboarding_completed?: boolean;
 }
 
 interface AuthContextType {
@@ -46,7 +47,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               email: currentUser.email || '',
               full_name: currentUser.displayName || 'Nuovo Utente',
               avatar_url: currentUser.photoURL || '',
-              role: isAdmin ? 'admin' : 'client'
+              role: isAdmin ? 'admin' : 'client',
+              onboarding_completed: isAdmin ? true : false
             };
             
             await setDoc(docRef, newProfile);

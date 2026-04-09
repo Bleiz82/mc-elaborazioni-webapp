@@ -1,11 +1,21 @@
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, addDoc, collection } from 'firebase/firestore';
 
 // Initialize Stripe
-const stripePromise = loadStripe((import.meta as any).env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_TYooMQauvdEDq54NiTphI7jx');
+let stripePromise: Promise<Stripe | null> | null = null;
 
-export const getStripe = () => stripePromise;
+export const getStripe = () => {
+  if (!stripePromise) {
+    const key = (import.meta as any).env.VITE_STRIPE_PUBLISHABLE_KEY;
+    if (!key) {
+      console.warn("VITE_STRIPE_PUBLISHABLE_KEY is not set. Stripe payments will be disabled.");
+      return Promise.resolve(null);
+    }
+    stripePromise = loadStripe(key);
+  }
+  return stripePromise;
+};
 
 // 1. Cloud Function Approach (If deployed)
 export const createCheckoutSession = async (invoice: any) => {

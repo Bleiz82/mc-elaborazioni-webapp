@@ -1,7 +1,7 @@
 import { db } from '../../../lib/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { getAIProvider } from '../aiProvider';
-import { logActivity } from '../utils';
+import { logActivity, getAdminUID } from '../utils';
 
 export async function runAgentSolleciti(params: any) {
   const { fullContext } = params;
@@ -10,6 +10,7 @@ export async function runAgentSolleciti(params: any) {
   if (invoices.length === 0) return;
 
   const aiProvider = await getAIProvider();
+  const adminUID = await getAdminUID();
   const now = new Date();
 
   for (const invoice of invoices) {
@@ -79,7 +80,7 @@ Scrivi in italiano, massimo 5 frasi. Non essere aggressivo.`;
       // If third level, notify admin
       if (level === 'terzo') {
         await addDoc(collection(db, 'notifications'), {
-          user_id: 'admin', // assuming a generic admin or broadcast
+          user_id: adminUID, // assuming a generic admin or broadcast
           title: 'Intervento Manuale Richiesto',
           message: `Il cliente per la parcella ${invoice.invoice_number} ha ignorato 3 solleciti.`,
           type: 'alert',

@@ -1,7 +1,7 @@
 import { db } from '../../../lib/firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { getAIProvider } from '../aiProvider';
-import { logActivity } from '../utils';
+import { logActivity, getAdminUID } from '../utils';
 
 export async function runAgentDocumenti(params: any) {
   const { fullContext, documentId, documentData } = params;
@@ -12,6 +12,7 @@ export async function runAgentDocumenti(params: any) {
   if (docsToProcess.length === 0) return;
 
   const aiProvider = await getAIProvider();
+  const adminUID = await getAdminUID();
 
   for (const docItem of docsToProcess) {
     if (docItem.status !== 'caricato') continue;
@@ -65,7 +66,7 @@ ${simulatedContent}`;
       });
 
       await addDoc(collection(db, 'notifications'), {
-        user_id: 'admin',
+        user_id: adminUID,
         title: 'Documento Classificato',
         message: `Nuovo documento classificato: ${result.category} (Confidence: ${Math.round(result.confidence * 100)}%)`,
         type: 'document',

@@ -1,13 +1,14 @@
 import { db } from '../../../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { getAIProvider } from '../aiProvider';
-import { logActivity } from '../utils';
+import { logActivity, getAdminUID } from '../utils';
 
 export async function runAgentAssistente(params: any) {
   const { message, clientId, clientData } = params;
 
   try {
     const aiProvider = await getAIProvider();
+    const adminUID = await getAdminUID();
 
     const prompt = `Sei l'assistente virtuale dello studio M&C Elaborazioni e Consulenze Aziendali di Senorbì, Sardegna.
    
@@ -64,7 +65,7 @@ Rispondi SOLO con JSON:
 
     if (result.needs_human) {
       await addDoc(collection(db, 'notifications'), {
-        user_id: 'admin',
+        user_id: adminUID,
         title: 'Richiesta Assistenza Complessa',
         message: `Il cliente ${clientData?.displayName} ha fatto una richiesta che richiede intervento umano.`,
         type: 'message',

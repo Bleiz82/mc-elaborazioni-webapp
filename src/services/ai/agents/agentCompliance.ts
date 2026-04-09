@@ -1,7 +1,7 @@
 import { db } from '../../../lib/firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { getAIProvider } from '../aiProvider';
-import { logActivity } from '../utils';
+import { logActivity, getAdminUID } from '../utils';
 
 export async function runAgentCompliance(params: any) {
   const { practiceId, practiceData, documents } = params;
@@ -10,6 +10,7 @@ export async function runAgentCompliance(params: any) {
 
   try {
     const aiProvider = await getAIProvider();
+    const adminUID = await getAdminUID();
 
     const docList = documents?.map((d: any) => `${d.name} (${d.category})`).join(', ') || 'Nessun documento';
 
@@ -50,7 +51,7 @@ Rispondi SOLO con JSON:
 
     if (result.status !== 'compliant') {
       await addDoc(collection(db, 'notifications'), {
-        user_id: 'admin',
+        user_id: adminUID,
         title: 'Problema di Compliance',
         message: `La pratica "${practiceData.title}" ha problemi di conformità: ${result.warnings?.[0] || 'Verificare'}`,
         type: 'alert',

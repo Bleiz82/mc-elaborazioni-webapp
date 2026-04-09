@@ -41,12 +41,12 @@ const SortablePracticeItem: React.FC<{ practice: Practice }> = ({ practice }) =>
     <div 
       ref={setNodeRef} style={style} {...attributes} {...listeners}
       className={clsx(
-        "p-3 bg-white border rounded-lg shadow-sm cursor-grab active:cursor-grabbing mb-2",
-        isDragging ? "border-sky-500 shadow-md opacity-80" : "border-slate-200 hover:border-slate-300"
+        "p-3 bg-white dark:bg-slate-800 border rounded-lg shadow-sm cursor-grab active:cursor-grabbing mb-2",
+        isDragging ? "border-sky-500 shadow-md opacity-80" : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
       )}
     >
-      <p className="font-medium text-slate-900 text-sm">{practice.title}</p>
-      <p className="text-xs text-slate-500 mt-1">{practice.client_name}</p>
+      <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">{practice.title}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{practice.client_name}</p>
     </div>
   );
 };
@@ -196,8 +196,8 @@ export default function AdminCollaborators() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Collaboratori</h1>
-          <p className="text-slate-500 text-sm mt-1">Gestisci il team e assegna le pratiche</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Collaboratori</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestisci il team e assegna le pratiche</p>
         </div>
         <button 
           onClick={() => setIsAddModalOpen(true)}
@@ -213,51 +213,51 @@ export default function AdminCollaborators() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500"></div>
         </div>
       ) : collaborators.length === 0 ? (
-        <div className="bg-white p-12 rounded-xl border border-slate-200 text-center">
-          <Users className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500">Nessun collaboratore presente</p>
+        <div className="bg-white dark:bg-slate-800 p-12 rounded-xl border border-slate-200 dark:border-slate-700 text-center">
+          <Users className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <p className="text-slate-500 dark:text-slate-400">Nessun collaboratore presente</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {collaborators.map(collab => (
-            <div key={collab.id} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div key={collab.id} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
               <div className="p-6 flex-1">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 font-bold text-lg">
+                    <div className="w-12 h-12 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 font-bold text-lg">
                       {collab.displayName.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900">{collab.displayName}</h3>
-                      <p className="text-sm text-slate-500">{collab.email}</p>
+                      <h3 className="font-bold text-slate-900 dark:text-slate-100">{collab.displayName}</h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">{collab.email}</p>
                     </div>
                   </div>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400">
                     {collab.specialization || 'Generale'}
                   </span>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <div className="flex items-center gap-2 text-slate-500 mb-1">
+                  <div className="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg border border-slate-100 dark:border-slate-600/50">
+                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-1">
                       <Briefcase className="w-4 h-4" />
                       <span className="text-xs font-medium">Pratiche Attive</span>
                     </div>
-                    <p className="text-xl font-bold text-slate-900">{collab.active_practices || 0}</p>
+                    <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{collab.active_practices || 0}</p>
                   </div>
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <div className="flex items-center gap-2 text-slate-500 mb-1">
+                  <div className="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg border border-slate-100 dark:border-slate-600/50">
+                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-1">
                       <CheckCircle2 className="w-4 h-4" />
                       <span className="text-xs font-medium">Scadenze (Mese)</span>
                     </div>
-                    <p className="text-xl font-bold text-slate-900">{collab.completed_deadlines || 0}</p>
+                    <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{collab.completed_deadlines || 0}</p>
                   </div>
                 </div>
               </div>
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-200">
+              <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-700">
                 <button 
                   onClick={() => setSelectedCollab(collab)}
-                  className="w-full flex items-center justify-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-700 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 transition-colors"
                 >
                   Gestisci Assegnazioni <ChevronRight className="w-4 h-4" />
                 </button>
@@ -270,45 +270,45 @@ export default function AdminCollaborators() {
       {/* Add Collaborator Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">Nuovo Collaboratore</h2>
-              <button onClick={() => setIsAddModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Nuovo Collaboratore</h2>
+              <button onClick={() => setIsAddModalOpen(false)} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleAddCollaborator} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Nome *</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nome *</label>
                   <input 
                     type="text" required
                     value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Cognome *</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Cognome *</label>
                   <input 
                     type="text" required
                     value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email *</label>
                 <input 
                   type="email" required
                   value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Specializzazione</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Specializzazione</label>
                 <select 
                   value={formData.specialization} onChange={e => setFormData({...formData, specialization: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 >
                   <option value="Fiscale">Fiscale</option>
                   <option value="Paghe e Contributi">Paghe e Contributi</option>
@@ -317,16 +317,16 @@ export default function AdminCollaborators() {
                   <option value="Generale">Generale</option>
                 </select>
               </div>
-              <div className="bg-sky-50 p-3 rounded-lg border border-sky-100 flex items-start gap-3 mt-4">
-                <Mail className="w-5 h-5 text-sky-600 mt-0.5" />
-                <p className="text-sm text-sky-800">
+              <div className="bg-sky-50 dark:bg-sky-900/30 p-3 rounded-lg border border-sky-100 dark:border-sky-800/50 flex items-start gap-3 mt-4">
+                <Mail className="w-5 h-5 text-sky-600 dark:text-sky-400 mt-0.5" />
+                <p className="text-sm text-sky-800 dark:text-sky-300">
                   Verrà inviata un'email con le istruzioni per accedere alla piattaforma.
                 </p>
               </div>
               <div className="pt-4 flex justify-end gap-3">
                 <button 
                   type="button" onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-medium transition-colors"
                 >
                   Annulla
                 </button>
@@ -345,27 +345,27 @@ export default function AdminCollaborators() {
       {/* Assignment Panel Modal */}
       {selectedCollab && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
               <div>
-                <h2 className="text-lg font-bold text-slate-900">Assegnazione Pratiche</h2>
-                <p className="text-sm text-slate-500">Gestisci le pratiche di {selectedCollab.displayName}</p>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Assegnazione Pratiche</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Gestisci le pratiche di {selectedCollab.displayName}</p>
               </div>
-              <button onClick={() => setSelectedCollab(null)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSelectedCollab(null)} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
                 <X className="w-5 h-5" />
               </button>
             </div>
             
             <div className="flex-1 p-6 overflow-hidden flex flex-col">
-              <p className="text-sm text-slate-600 mb-4">Trascina le pratiche da una colonna all'altra per assegnarle o rimuoverle.</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">Trascina le pratiche da una colonna all'altra per assegnarle o rimuoverle.</p>
               
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <div className="flex-1 grid grid-cols-2 gap-6 min-h-0">
                   {/* Unassigned Column */}
-                  <div className="flex flex-col bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
-                    <div className="p-3 border-b border-slate-200 bg-white">
-                      <h3 className="font-bold text-slate-700">Pratiche da Assegnare</h3>
-                      <p className="text-xs text-slate-500">{unassignedPractices.length} pratiche</p>
+                  <div className="flex flex-col bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div className="p-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                      <h3 className="font-bold text-slate-700 dark:text-slate-300">Pratiche da Assegnare</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{unassignedPractices.length} pratiche</p>
                     </div>
                     <div className="flex-1 p-3 overflow-y-auto" id="unassigned">
                       <SortableContext items={unassignedPractices.map(p => p.id)} strategy={verticalListSortingStrategy}>
@@ -373,7 +373,7 @@ export default function AdminCollaborators() {
                           <SortablePracticeItem key={practice.id} practice={practice} />
                         ))}
                         {unassignedPractices.length === 0 && (
-                          <div className="h-full flex items-center justify-center text-slate-400 text-sm italic">
+                          <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-500 text-sm italic">
                             Nessuna pratica da assegnare
                           </div>
                         )}
@@ -382,10 +382,10 @@ export default function AdminCollaborators() {
                   </div>
 
                   {/* Assigned Column */}
-                  <div className="flex flex-col bg-sky-50 rounded-xl border border-sky-200 overflow-hidden">
-                    <div className="p-3 border-b border-sky-200 bg-white">
-                      <h3 className="font-bold text-sky-700">Assegnate a {selectedCollab.displayName}</h3>
-                      <p className="text-xs text-sky-600">{assignedPractices.length} pratiche</p>
+                  <div className="flex flex-col bg-sky-50 dark:bg-sky-900/10 rounded-xl border border-sky-200 dark:border-sky-800/30 overflow-hidden">
+                    <div className="p-3 border-b border-sky-200 dark:border-sky-800/30 bg-white dark:bg-slate-800">
+                      <h3 className="font-bold text-sky-700 dark:text-sky-400">Assegnate a {selectedCollab.displayName}</h3>
+                      <p className="text-xs text-sky-600 dark:text-sky-500">{assignedPractices.length} pratiche</p>
                     </div>
                     <div className="flex-1 p-3 overflow-y-auto" id="assigned">
                       <SortableContext items={assignedPractices.map(p => p.id)} strategy={verticalListSortingStrategy}>
@@ -393,7 +393,7 @@ export default function AdminCollaborators() {
                           <SortablePracticeItem key={practice.id} practice={practice} />
                         ))}
                         {assignedPractices.length === 0 && (
-                          <div className="h-full flex items-center justify-center text-sky-400 text-sm italic">
+                          <div className="h-full flex items-center justify-center text-sky-400 dark:text-sky-600 text-sm italic">
                             Trascina qui le pratiche per assegnarle
                           </div>
                         )}

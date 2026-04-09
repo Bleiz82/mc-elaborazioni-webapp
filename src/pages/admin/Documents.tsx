@@ -267,8 +267,8 @@ export default function AdminDocuments() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Documenti</h1>
-          <p className="text-slate-500 text-sm mt-1">Gestisci i documenti dei clienti dello studio</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Documenti</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestisci i documenti dei clienti dello studio</p>
         </div>
         <button 
           onClick={() => setIsUploadModalOpen(true)}
@@ -281,67 +281,67 @@ export default function AdminDocuments() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-            <FileText className="w-5 h-5 text-slate-600" />
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+            <FileText className="w-5 h-5 text-slate-600 dark:text-slate-300" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500">Totale Documenti</p>
-            <p className="text-lg font-bold text-slate-900">{totalDocs}</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Totale Documenti</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{totalDocs}</p>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-            <Clock className="w-5 h-5 text-amber-600" />
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+            <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500">Da Revisionare</p>
-            <p className="text-lg font-bold text-slate-900">{toReviewDocs}</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Da Revisionare</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{toReviewDocs}</p>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500">Approvati</p>
-            <p className="text-lg font-bold text-slate-900">{approvedDocs}</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Approvati</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{approvedDocs}</p>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-            <AlertCircle className="w-5 h-5 text-red-600" />
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500">Da Rifare</p>
-            <p className="text-lg font-bold text-slate-900">{toRedoDocs}</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Da Rifare</p>
+            <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{toRedoDocs}</p>
           </div>
         </div>
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-4">
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col lg:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500" />
           <input 
             type="text" 
             placeholder="Cerca per nome file..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent text-sm"
           />
         </div>
         <div className="flex flex-wrap gap-2">
           <select 
             value={filterClient} onChange={(e) => setFilterClient(e.target.value)}
-            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            className="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
           >
             <option value="all">Tutti i clienti</option>
             {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <select 
             value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            className="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
           >
             <option value="all">Tutte le categorie</option>
             <option value="fattura">Fattura</option>
@@ -355,7 +355,7 @@ export default function AdminDocuments() {
           </select>
           <select 
             value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            className="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
           >
             <option value="all">Tutti gli stati</option>
             <option value="caricato">Caricato</option>
@@ -363,16 +363,16 @@ export default function AdminDocuments() {
             <option value="approvato">Approvato</option>
             <option value="da_rifare">Da Rifare</option>
           </select>
-          <div className="bg-slate-100 p-1 rounded-lg flex items-center ml-auto">
+          <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg flex items-center ml-auto">
             <button 
               onClick={() => setView('list')}
-              className={clsx("p-1.5 rounded-md transition-colors", view === 'list' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}
+              className={clsx("p-1.5 rounded-md transition-colors", view === 'list' ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300")}
             >
               <List className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setView('grid')}
-              className={clsx("p-1.5 rounded-md transition-colors", view === 'grid' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700")}
+              className={clsx("p-1.5 rounded-md transition-colors", view === 'grid' ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300")}
             >
               <Grid className="w-4 h-4" />
             </button>
@@ -386,15 +386,15 @@ export default function AdminDocuments() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500"></div>
         </div>
       ) : filteredDocs.length === 0 ? (
-        <div className="bg-white p-12 rounded-xl border border-slate-200 text-center">
-          <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500">Nessun documento trovato</p>
+        <div className="bg-white dark:bg-slate-800 p-12 rounded-xl border border-slate-200 dark:border-slate-700 text-center">
+          <FileText className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <p className="text-slate-500 dark:text-slate-400">Nessun documento trovato</p>
         </div>
       ) : view === 'list' ? (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-medium">
+              <thead className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium">
                 <tr>
                   <th className="px-6 py-4">Nome File</th>
                   <th className="px-6 py-4">Cliente</th>
@@ -404,25 +404,25 @@ export default function AdminDocuments() {
                   <th className="px-6 py-4 text-right">Azioni</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
                 {filteredDocs.map(doc => (
                   <React.Fragment key={doc.id}>
-                    <tr className="hover:bg-slate-50 transition-colors">
+                    <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           {getFileIcon(doc.type)}
                           <div>
-                            <p className="font-medium text-slate-900 max-w-[200px] truncate" title={doc.name}>{doc.name}</p>
-                            <p className="text-xs text-slate-500">{formatSize(doc.size)}</p>
+                            <p className="font-medium text-slate-900 dark:text-slate-100 max-w-[200px] truncate" title={doc.name}>{doc.name}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{formatSize(doc.size)}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">{doc.client_name}</td>
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{doc.client_name}</td>
                       <td className="px-6 py-4">
                         <select 
                           value={doc.category}
                           onChange={(e) => handleUpdateCategory(doc.id, e.target.value)}
-                          className="text-xs font-medium rounded-full px-2.5 py-1 border-0 bg-slate-100 text-slate-700 cursor-pointer focus:ring-2 focus:ring-sky-500 capitalize"
+                          className="text-xs font-medium rounded-full px-2.5 py-1 border-0 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer focus:ring-2 focus:ring-sky-500 capitalize"
                         >
                           <option value="fattura">Fattura</option>
                           <option value="contratto">Contratto</option>
@@ -439,11 +439,11 @@ export default function AdminDocuments() {
                           value={doc.status}
                           onChange={(e) => handleUpdateStatus(doc.id, e.target.value)}
                           className={clsx(
-                            "text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-sky-500 capitalize",
-                            doc.status === 'approvato' ? 'bg-emerald-100 text-emerald-800' :
-                            doc.status === 'da_rifare' ? 'bg-red-100 text-red-800' :
-                            doc.status === 'in_revisione' ? 'bg-sky-100 text-sky-800' :
-                            'bg-amber-100 text-amber-800'
+                            "text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-sky-500 capitalize dark:bg-slate-700 dark:text-white",
+                            doc.status === 'approvato' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400' :
+                            doc.status === 'da_rifare' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' :
+                            doc.status === 'in_revisione' ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-400' :
+                            'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400'
                           )}
                         >
                           <option value="caricato">Caricato</option>
@@ -452,25 +452,25 @@ export default function AdminDocuments() {
                           <option value="da_rifare">Da Rifare</option>
                         </select>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
                         {format(new Date(doc.created_at), 'dd MMM yyyy', { locale: it })}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => setPreviewDoc(doc)} className="p-1.5 text-slate-400 hover:text-sky-600 transition-colors" title="Anteprima">
+                          <button onClick={() => setPreviewDoc(doc)} className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-sky-600 dark:hover:text-sky-400 transition-colors" title="Anteprima">
                             <Eye className="w-4 h-4" />
                           </button>
-                          <a href={doc.url} target="_blank" rel="noopener noreferrer" download className="p-1.5 text-slate-400 hover:text-sky-600 transition-colors" title="Scarica">
+                          <a href={doc.url} target="_blank" rel="noopener noreferrer" download className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-sky-600 dark:hover:text-sky-400 transition-colors" title="Scarica">
                             <Download className="w-4 h-4" />
                           </a>
-                          <button onClick={() => handleDelete(doc)} className="p-1.5 text-slate-400 hover:text-red-600 transition-colors" title="Elimina">
+                          <button onClick={() => handleDelete(doc)} className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition-colors" title="Elimina">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
                     </tr>
                     {rejectNoteDocId === doc.id && (
-                      <tr className="bg-red-50/50">
+                      <tr className="bg-red-50/50 dark:bg-red-900/10">
                         <td colSpan={6} className="px-6 py-3">
                           <div className="flex items-center gap-3">
                             <input 
@@ -478,18 +478,18 @@ export default function AdminDocuments() {
                               value={rejectNote}
                               onChange={(e) => setRejectNote(e.target.value)}
                               placeholder="Motivo per cui il documento è da rifare..."
-                              className="flex-1 px-3 py-1.5 text-sm border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                              className="flex-1 px-3 py-1.5 text-sm bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900/50 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-red-500 focus:border-transparent"
                               autoFocus
                             />
                             <button 
                               onClick={() => handleSaveRejectNote(doc.id)}
-                              className="px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700"
+                              className="px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
                             >
                               Salva
                             </button>
                             <button 
                               onClick={() => setRejectNoteDocId(null)}
-                              className="px-3 py-1.5 text-slate-600 text-sm font-medium hover:bg-slate-200 rounded-lg"
+                              className="px-3 py-1.5 text-slate-600 dark:text-slate-400 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
                             >
                               Annulla
                             </button>
@@ -506,36 +506,36 @@ export default function AdminDocuments() {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {filteredDocs.map(doc => (
-            <div key={doc.id} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden group">
-              <div className="h-32 bg-slate-100 flex items-center justify-center relative">
+            <div key={doc.id} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden group">
+              <div className="h-32 bg-slate-100 dark:bg-slate-900 flex items-center justify-center relative">
                 {doc.type.startsWith('image/') ? (
                   <img src={doc.url} alt={doc.name} className="w-full h-full object-cover" />
                 ) : (
                   getFileIcon(doc.type)
                 )}
                 <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                  <button onClick={() => setPreviewDoc(doc)} className="p-2 bg-white rounded-full text-slate-900 hover:text-sky-600 transition-colors">
+                  <button onClick={() => setPreviewDoc(doc)} className="p-2 bg-white dark:bg-slate-800 rounded-full text-slate-900 dark:text-slate-100 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
                     <Eye className="w-4 h-4" />
                   </button>
-                  <a href={doc.url} target="_blank" rel="noopener noreferrer" download className="p-2 bg-white rounded-full text-slate-900 hover:text-sky-600 transition-colors">
+                  <a href={doc.url} target="_blank" rel="noopener noreferrer" download className="p-2 bg-white dark:bg-slate-800 rounded-full text-slate-900 dark:text-slate-100 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
                     <Download className="w-4 h-4" />
                   </a>
                 </div>
               </div>
               <div className="p-3">
-                <p className="text-sm font-medium text-slate-900 truncate" title={doc.name}>{doc.name}</p>
-                <p className="text-xs text-slate-500 truncate mt-0.5">{doc.client_name}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate" title={doc.name}>{doc.name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">{doc.client_name}</p>
                 <div className="flex items-center justify-between mt-2">
                   <span className={clsx(
                     "text-[10px] font-bold uppercase px-1.5 py-0.5 rounded",
-                    doc.status === 'approvato' ? 'bg-emerald-100 text-emerald-800' :
-                    doc.status === 'da_rifare' ? 'bg-red-100 text-red-800' :
-                    doc.status === 'in_revisione' ? 'bg-sky-100 text-sky-800' :
-                    'bg-amber-100 text-amber-800'
+                    doc.status === 'approvato' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400' :
+                    doc.status === 'da_rifare' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' :
+                    doc.status === 'in_revisione' ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-400' :
+                    'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400'
                   )}>
                     {doc.status.replace('_', ' ')}
                   </span>
-                  <span className="text-[10px] text-slate-400">{format(new Date(doc.created_at), 'dd/MM/yy')}</span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">{format(new Date(doc.created_at), 'dd/MM/yy')}</span>
                 </div>
               </div>
             </div>
@@ -546,30 +546,30 @@ export default function AdminDocuments() {
       {/* Preview Modal */}
       {previewDoc && (
         <div className="fixed inset-0 bg-slate-900/90 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
               <div className="flex items-center gap-3">
                 {getFileIcon(previewDoc.type)}
-                <h3 className="font-bold text-slate-900 truncate max-w-md">{previewDoc.name}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-slate-100 truncate max-w-md">{previewDoc.name}</h3>
               </div>
               <div className="flex items-center gap-2">
-                <a href={previewDoc.url} target="_blank" rel="noopener noreferrer" download className="p-2 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">
+                <a href={previewDoc.url} target="_blank" rel="noopener noreferrer" download className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors">
                   <Download className="w-5 h-5" />
                 </a>
-                <button onClick={() => setPreviewDoc(null)} className="p-2 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">
+                <button onClick={() => setPreviewDoc(null)} className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
-            <div className="flex-1 bg-slate-100 overflow-auto flex items-center justify-center p-4">
+            <div className="flex-1 bg-slate-100 dark:bg-slate-900 overflow-auto flex items-center justify-center p-4">
               {previewDoc.type.startsWith('image/') ? (
                 <img src={previewDoc.url} alt={previewDoc.name} className="max-w-full max-h-full object-contain shadow-md" />
               ) : previewDoc.type === 'application/pdf' ? (
                 <iframe src={previewDoc.url} className="w-full h-full shadow-md rounded-lg" title={previewDoc.name} />
               ) : (
                 <div className="text-center">
-                  <File className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600 mb-4">Anteprima non disponibile per questo tipo di file.</p>
+                  <File className="w-16 h-16 text-slate-400 dark:text-slate-600 mx-auto mb-4" />
+                  <p className="text-slate-600 dark:text-slate-400 mb-4">Anteprima non disponibile per questo tipo di file.</p>
                   <a href={previewDoc.url} target="_blank" rel="noopener noreferrer" download className="inline-flex items-center px-4 py-2 bg-sky-500 text-white rounded-lg font-medium hover:bg-sky-600">
                     <Download className="w-4 h-4 mr-2" /> Scarica File
                   </a>
@@ -583,19 +583,19 @@ export default function AdminDocuments() {
       {/* Upload Modal */}
       {isUploadModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">Carica Documento</h2>
-              <button onClick={() => !isUploading && setIsUploadModalOpen(false)} className="text-slate-400 hover:text-slate-600" disabled={isUploading}>
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Carica Documento</h2>
+              <button onClick={() => !isUploading && setIsUploadModalOpen(false)} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300" disabled={isUploading}>
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Cliente *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Cliente *</label>
                 <select 
                   value={uploadClient} onChange={e => setUploadClient(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   disabled={isUploading}
                 >
                   <option value="">Seleziona cliente...</option>
@@ -603,10 +603,10 @@ export default function AdminDocuments() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Categoria</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Categoria</label>
                 <select 
                   value={uploadCategory} onChange={e => setUploadCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   disabled={isUploading}
                 >
                   <option value="fattura">Fattura</option>
@@ -621,14 +621,14 @@ export default function AdminDocuments() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">File (Max 10)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">File (Max 10)</label>
                 <div 
-                  className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
                   onClick={() => !isUploading && fileInputRef.current?.click()}
                 >
                   <UploadCloud className="w-8 h-8 text-sky-500 mx-auto mb-2" />
-                  <p className="text-sm text-slate-600 font-medium">Clicca per selezionare i file</p>
-                  <p className="text-xs text-slate-400 mt-1">PDF, JPG, PNG, DOC (Max 10 file)</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Clicca per selezionare i file</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">PDF, JPG, PNG, DOC (Max 10 file)</p>
                   <input 
                     type="file" 
                     multiple 
@@ -643,18 +643,18 @@ export default function AdminDocuments() {
               {uploadFiles.length > 0 && (
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {uploadFiles.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-200">
+                    <div key={index} className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-700">
                       <div className="flex items-center gap-2 overflow-hidden">
                         {getFileIcon(file.type)}
-                        <span className="text-sm font-medium text-slate-700 truncate">{file.name}</span>
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{file.name}</span>
                       </div>
                       {!isUploading && (
-                        <button onClick={() => removeUploadFile(index)} className="text-slate-400 hover:text-red-500">
+                        <button onClick={() => removeUploadFile(index)} className="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400">
                           <X className="w-4 h-4" />
                         </button>
                       )}
                       {isUploading && uploadProgress[file.name] !== undefined && (
-                        <span className="text-xs font-medium text-sky-600">{Math.round(uploadProgress[file.name])}%</span>
+                        <span className="text-xs font-medium text-sky-600 dark:text-sky-400">{Math.round(uploadProgress[file.name])}%</span>
                       )}
                     </div>
                   ))}
@@ -662,10 +662,10 @@ export default function AdminDocuments() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Note (Opzionale)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Note (Opzionale)</label>
                 <textarea 
                   value={uploadNotes} onChange={e => setUploadNotes(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent resize-none"
                   rows={2}
                   disabled={isUploading}
                 />
@@ -674,7 +674,7 @@ export default function AdminDocuments() {
               <div className="pt-4 flex justify-end gap-3">
                 <button 
                   type="button" onClick={() => !isUploading && setIsUploadModalOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-medium transition-colors"
                   disabled={isUploading}
                 >
                   Annulla

@@ -236,16 +236,16 @@ export default function AdminDeadlines() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Scadenze</h1>
-          <p className="text-slate-500 text-sm mt-1">Gestisci le scadenze dello studio e dei clienti</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Scadenze</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestisci le scadenze dello studio e dei clienti</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="bg-slate-100 p-1 rounded-lg flex items-center">
+          <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg flex items-center">
             <button 
               onClick={() => setView('list')}
               className={clsx(
                 "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",
-                view === 'list' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                view === 'list' ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
               )}
             >
               <List className="w-4 h-4" /> Lista
@@ -254,7 +254,7 @@ export default function AdminDeadlines() {
               onClick={() => setView('calendar')}
               className={clsx(
                 "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",
-                view === 'calendar' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                view === 'calendar' ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
               )}
             >
               <CalendarIcon className="w-4 h-4" /> Calendario
@@ -273,12 +273,12 @@ export default function AdminDeadlines() {
       {view === 'list' ? (
         <>
           {/* Filters */}
-          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Tipo</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Tipo</label>
               <select 
                 value={filterType} onChange={(e) => setFilterType(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               >
                 <option value="all">Tutti i tipi</option>
                 <option value="fiscale">Fiscale</option>
@@ -290,10 +290,10 @@ export default function AdminDeadlines() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Cliente</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Cliente</label>
               <select 
                 value={filterClient} onChange={(e) => setFilterClient(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               >
                 <option value="all">Tutti i clienti</option>
                 {clients.map(c => (
@@ -302,10 +302,10 @@ export default function AdminDeadlines() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Stato</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Stato</label>
               <select 
                 value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               >
                 <option value="all">Tutti gli stati</option>
                 <option value="da_fare">Da Fare</option>
@@ -315,10 +315,10 @@ export default function AdminDeadlines() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 mb-1">Priorità</label>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Priorità</label>
               <select 
                 value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               >
                 <option value="all">Tutte le priorità</option>
                 <option value="urgente">Urgente</option>
@@ -330,10 +330,10 @@ export default function AdminDeadlines() {
           </div>
 
           {/* Table */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-medium">
+                <thead className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium">
                   <tr>
                     <th className="px-6 py-4">Titolo</th>
                     <th className="px-6 py-4">Cliente</th>
@@ -343,32 +343,32 @@ export default function AdminDeadlines() {
                     <th className="px-6 py-4 text-right">Azioni</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
                   {loading ? (
                     <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                      <td colSpan={6} className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500 mx-auto mb-2"></div>
                         Caricamento scadenze...
                       </td>
                     </tr>
                   ) : filteredDeadlines.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
+                      <td colSpan={6} className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
                         Nessuna scadenza trovata
                       </td>
                     </tr>
                   ) : (
                     filteredDeadlines.map((deadline) => (
-                      <tr key={deadline.id} className={clsx("hover:bg-slate-50 transition-colors", deadline.status === 'scaduta' && "bg-red-50/50")}>
+                      <tr key={deadline.id} className={clsx("hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors", deadline.status === 'scaduta' && "bg-red-50/50 dark:bg-red-900/10")}>
                         <td className="px-6 py-4">
-                          <div className="font-medium text-slate-900">{deadline.title}</div>
-                          <div className="text-xs text-slate-500 mt-0.5 capitalize">{deadline.type}</div>
+                          <div className="font-medium text-slate-900 dark:text-slate-100">{deadline.title}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 capitalize">{deadline.type}</div>
                         </td>
-                        <td className="px-6 py-4 text-slate-600">
+                        <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                           {deadline.client_name}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-slate-900 font-medium">{format(parseISO(deadline.due_date), 'dd MMM yyyy', { locale: it })}</div>
+                          <div className="text-slate-900 dark:text-slate-100 font-medium">{format(parseISO(deadline.due_date), 'dd MMM yyyy', { locale: it })}</div>
                           <div className={clsx("text-xs mt-0.5", getCountdownColor(deadline.due_date, deadline.status))}>
                             {getCountdownText(deadline.due_date, deadline.status)}
                           </div>
@@ -383,7 +383,7 @@ export default function AdminDeadlines() {
                             value={deadline.status}
                             onChange={(e) => handleUpdateStatus(deadline.id, e.target.value)}
                             className={clsx(
-                              "text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-sky-500",
+                              "text-xs font-medium rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-sky-500 dark:bg-slate-700 dark:text-white",
                               getStatusColor(deadline.status)
                             )}
                           >
@@ -394,7 +394,7 @@ export default function AdminDeadlines() {
                           </select>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors">
+                          <button className="p-2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                             <MoreVertical className="w-5 h-5" />
                           </button>
                         </td>
@@ -408,7 +408,7 @@ export default function AdminDeadlines() {
         </>
       ) : (
         /* Calendar View */
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex justify-center">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex justify-center">
           <DayPicker
             mode="single"
             locale={it}
@@ -419,6 +419,7 @@ export default function AdminDeadlines() {
               hasDeadline: { fontWeight: 'bold', textDecoration: 'underline' }
             }}
             onDayClick={handleDayClick}
+            className="dark:text-slate-100"
             components={{
               Day: (props) => {
                 const date = props.date;
@@ -437,7 +438,7 @@ export default function AdminDeadlines() {
                           
                           return <div key={i} className={clsx("w-1.5 h-1.5 rounded-full", color)} />
                         })}
-                        {dayDeads.length > 3 && <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />}
+                        {dayDeads.length > 3 && <div className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600" />}
                       </div>
                     )}
                   </div>
@@ -451,29 +452,29 @@ export default function AdminDeadlines() {
       {/* Create Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">Nuova Scadenza</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Nuova Scadenza</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleCreateDeadline} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Titolo *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Titolo *</label>
                 <input 
                   type="text" required
                   value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   placeholder="Es. F24 IVA Trimestrale"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Cliente *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Cliente *</label>
                 <select 
                   required
                   value={formData.client_id} onChange={e => setFormData({...formData, client_id: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 >
                   <option value="">Seleziona cliente...</option>
                   {clients.map(c => (
@@ -483,10 +484,10 @@ export default function AdminDeadlines() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Tipo</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tipo</label>
                   <select 
                     value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   >
                     <option value="fiscale">Fiscale</option>
                     <option value="contributiva">Contributiva</option>
@@ -497,16 +498,16 @@ export default function AdminDeadlines() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Data Scadenza *</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Data Scadenza *</label>
                   <input 
                     type="date" required
                     value={formData.due_date} onChange={e => setFormData({...formData, due_date: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Priorità</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Priorità</label>
                 <div className="flex gap-4">
                   {['bassa', 'media', 'alta', 'urgente'].map(p => (
                     <label key={p} className="flex items-center gap-2 cursor-pointer">
@@ -514,9 +515,9 @@ export default function AdminDeadlines() {
                         type="radio" name="priority" value={p}
                         checked={formData.priority === p}
                         onChange={e => setFormData({...formData, priority: e.target.value})}
-                        className="text-sky-500 focus:ring-sky-500"
+                        className="text-sky-500 focus:ring-sky-500 dark:bg-slate-700 dark:border-slate-600"
                       />
-                      <span className="text-sm capitalize">{p}</span>
+                      <span className="text-sm capitalize dark:text-slate-300">{p}</span>
                     </label>
                   ))}
                 </div>
@@ -527,17 +528,17 @@ export default function AdminDeadlines() {
                     type="checkbox" 
                     checked={formData.is_recurring}
                     onChange={e => setFormData({...formData, is_recurring: e.target.checked})}
-                    className="rounded text-sky-500 focus:ring-sky-500"
+                    className="rounded text-sky-500 focus:ring-sky-500 dark:bg-slate-700 dark:border-slate-600"
                   />
-                  <span className="text-sm font-medium text-slate-700">Scadenza Ricorrente</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Scadenza Ricorrente</span>
                 </label>
               </div>
               {formData.is_recurring && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Frequenza</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Frequenza</label>
                   <select 
                     value={formData.recurring_frequency} onChange={e => setFormData({...formData, recurring_frequency: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   >
                     <option value="mensile">Mensile</option>
                     <option value="trimestrale">Trimestrale</option>
@@ -548,7 +549,7 @@ export default function AdminDeadlines() {
               <div className="pt-4 flex justify-end gap-3">
                 <button 
                   type="button" onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-medium transition-colors"
                 >
                   Annulla
                 </button>
@@ -567,27 +568,27 @@ export default function AdminDeadlines() {
       {/* Day Modal */}
       {dayModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                 Scadenze del {format(selectedDate, 'dd MMMM yyyy', { locale: it })}
               </h2>
-              <button onClick={() => setDayModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setDayModalOpen(false)} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
               {dayDeadlines.map(deadline => (
-                <div key={deadline.id} className="p-4 rounded-lg border border-slate-200 bg-slate-50">
+                <div key={deadline.id} className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-slate-900">{deadline.title}</h3>
+                    <h3 className="font-bold text-slate-900 dark:text-slate-100">{deadline.title}</h3>
                     <span className={clsx("inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase", getPriorityColor(deadline.priority))}>
                       {deadline.priority}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-600 mb-2">{deadline.client_name}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{deadline.client_name}</p>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-slate-500 capitalize">{deadline.type}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-500 capitalize">{deadline.type}</span>
                     <span className={clsx("text-xs font-medium px-2 py-1 rounded-full", getStatusColor(deadline.status))}>
                       {deadline.status.replace('_', ' ')}
                     </span>

@@ -120,15 +120,15 @@ export default function ClientChat() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] bg-slate-50 -mx-4 -mt-4">
+    <div className="flex flex-col h-[calc(100vh-8rem)] bg-slate-50 dark:bg-slate-900 -mx-4 -mt-4">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <div className="w-10 h-10 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0">
-          <Building2 className="w-5 h-5 text-sky-600" />
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+        <div className="w-10 h-10 bg-sky-100 dark:bg-sky-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+          <Building2 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
         </div>
         <div>
-          <h2 className="text-sm font-bold text-slate-900">M&C Elaborazioni</h2>
-          <p className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">M&C Elaborazioni</h2>
+          <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
             Online
           </p>
@@ -143,12 +143,12 @@ export default function ClientChat() {
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
-            <div className="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center">
-              <MessageSquare className="w-8 h-8 text-sky-300" />
+            <div className="w-16 h-16 bg-sky-50 dark:bg-sky-900/20 rounded-full flex items-center justify-center">
+              <MessageSquare className="w-8 h-8 text-sky-300 dark:text-sky-700" />
             </div>
             <div>
-              <p className="text-slate-900 font-medium">Nessun messaggio</p>
-              <p className="text-slate-500 text-sm">Invia un messaggio per iniziare la conversazione</p>
+              <p className="text-slate-900 dark:text-slate-100 font-medium">Nessun messaggio</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Invia un messaggio per iniziare la conversazione</p>
             </div>
           </div>
         ) : (
@@ -161,19 +161,19 @@ export default function ClientChat() {
                   {!isMe && msg.is_automated && (
                     <div className="flex items-center gap-1 mb-1 ml-1">
                       <Bot className="w-3 h-3 text-sky-500" />
-                      <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Assistente AI</span>
+                      <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Assistente AI</span>
                     </div>
                   )}
                   <div 
                     className={`px-4 py-2.5 rounded-2xl ${
                       isMe 
                         ? 'bg-sky-500 text-white rounded-br-sm' 
-                        : 'bg-white border border-slate-200 text-slate-800 rounded-bl-sm shadow-sm'
+                        : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-sm shadow-sm'
                     }`}
                   >
                     <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                   </div>
-                  <p className={`text-[10px] text-slate-400 mt-1 ${isMe ? 'text-right mr-1' : 'ml-1'}`}>
+                  <p className={`text-[10px] text-slate-400 dark:text-slate-500 mt-1 ${isMe ? 'text-right mr-1' : 'ml-1'}`}>
                     {format(new Date(msg.created_at), 'HH:mm')}
                   </p>
                 </div>
@@ -185,14 +185,14 @@ export default function ClientChat() {
       </div>
 
       {/* Input Area */}
-      <div className="bg-white border-t border-slate-200 p-3">
+      <div className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-3">
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Scrivi un messaggio..."
-            className="flex-1 bg-slate-100 border-transparent focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-200 rounded-full px-4 py-2.5 text-sm transition-all"
+            className="flex-1 bg-slate-100 dark:bg-slate-700 border-transparent focus:bg-white dark:focus:bg-slate-800 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 dark:focus:ring-sky-900 rounded-full px-4 py-2.5 text-sm text-slate-900 dark:text-white transition-all"
           />
           <button
             type="submit"

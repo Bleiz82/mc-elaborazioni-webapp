@@ -205,17 +205,17 @@ export default function AISubagents() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Centro Subagenti AI</h1>
-          <p className="text-slate-500 text-sm mt-1">Gestisci e monitora gli agenti autonomi dello studio</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Centro Subagenti AI</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestisci e monitora gli agenti autonomi dello studio</p>
         </div>
-        <button className="inline-flex items-center justify-center px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors">
+        <button className="inline-flex items-center justify-center px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
           <Settings className="w-5 h-5 mr-2" />
           Configurazione AI
         </button>
       </div>
 
       {/* Orchestrator Panel */}
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Bot className="w-48 h-48" />
         </div>
@@ -275,7 +275,7 @@ export default function AISubagents() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {agents.map((agent) => (
-          <div key={agent.id} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div key={agent.id} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
             <div className="p-5 flex-1">
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl ${agent.color} flex items-center justify-center shadow-sm`}>
@@ -284,9 +284,9 @@ export default function AISubagents() {
                 <button 
                   onClick={() => toggleStatus(agent.id)}
                   className={`p-2 rounded-full transition-colors ${
-                    agent.status === 'active' ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' : 
-                    agent.status === 'error' ? 'bg-red-100 text-red-600 hover:bg-red-200' :
-                    'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    agent.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50' : 
+                    agent.status === 'error' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50' :
+                    'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                   }`}
                   title={agent.status === 'active' ? 'Disattiva' : 'Attiva'}
                 >
@@ -294,14 +294,14 @@ export default function AISubagents() {
                 </button>
               </div>
               
-              <h3 className="text-lg font-semibold text-slate-900 mb-1">{agent.name}</h3>
-              <p className="text-sm text-slate-500 mb-4 line-clamp-2 min-h-[40px]">{agent.description}</p>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-1">{agent.name}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2 min-h-[40px]">{agent.description}</p>
               
               <div className="flex items-center gap-2 mb-4">
                 <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                  agent.status === 'active' ? 'bg-emerald-100 text-emerald-800' : 
-                  agent.status === 'error' ? 'bg-red-100 text-red-800' :
-                  'bg-slate-100 text-slate-800'
+                  agent.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400' : 
+                  agent.status === 'error' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' :
+                  'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-300'
                 }`}>
                   {agent.status === 'active' && <CheckCircle2 className="w-3 h-3 mr-1" />}
                   {agent.status === 'error' && <AlertCircle className="w-3 h-3 mr-1" />}
@@ -311,21 +311,21 @@ export default function AISubagents() {
 
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Ultima azione</span>
-                  <span className="font-medium text-slate-900 truncate max-w-[120px]">
+                  <span className="text-slate-500 dark:text-slate-400">Ultima azione</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100 truncate max-w-[120px]">
                     {new Date(agent.lastRun).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Azioni oggi</span>
-                  <span className="font-medium text-slate-900">{agent.actionsToday}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Azioni oggi</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{agent.actionsToday}</span>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-slate-500">Performance</span>
-                    <span className="font-medium text-slate-900">{agent.performance}%</span>
+                    <span className="text-slate-500 dark:text-slate-400">Performance</span>
+                    <span className="font-medium text-slate-900 dark:text-slate-100">{agent.performance}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-1.5">
+                  <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
                     <div 
                       className={`h-1.5 rounded-full ${agent.performance > 90 ? 'bg-emerald-500' : agent.performance > 70 ? 'bg-amber-500' : 'bg-red-500'}`} 
                       style={{ width: `${agent.performance}%` }}
@@ -334,15 +334,15 @@ export default function AISubagents() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-slate-100 bg-slate-50 p-3 flex gap-2">
+            <div className="border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-3 flex gap-2">
               <button 
                 onClick={() => handleRunAgent(agent.id)}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 <Play className="w-4 h-4" />
                 Esegui
               </button>
-              <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+              <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                 <Activity className="w-4 h-4" />
                 Log
               </button>
@@ -352,27 +352,27 @@ export default function AISubagents() {
       </div>
 
       {/* Recent Activity Log */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-          <h2 className="font-bold text-slate-900">Log Attività Recenti</h2>
-          <button className="text-sm font-medium text-sky-600 hover:text-sky-700">Vedi Tutti</button>
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+          <h2 className="font-bold text-slate-900 dark:text-slate-100">Log Attività Recenti</h2>
+          <button className="text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300">Vedi Tutti</button>
         </div>
-        <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+        <div className="divide-y divide-slate-100 dark:divide-slate-700/50 max-h-96 overflow-y-auto">
           {logs.length === 0 ? (
-            <div className="p-8 text-center text-slate-500">Nessuna attività registrata di recente</div>
+            <div className="p-8 text-center text-slate-500 dark:text-slate-400">Nessuna attività registrata di recente</div>
           ) : (
             logs.map(log => (
-              <div key={log.id} className="p-4 hover:bg-slate-50 transition-colors flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Bot className="w-4 h-4 text-slate-500" />
+              <div key={log.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-start gap-4">
+                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Bot className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-sm text-slate-900">{log.subagent_id}</span>
-                    <span className="text-xs text-slate-400">•</span>
-                    <span className="text-xs text-slate-500">{new Date(log.created_at).toLocaleString('it-IT')}</span>
+                    <span className="font-medium text-sm text-slate-900 dark:text-slate-100">{log.subagent_id}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">•</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{new Date(log.created_at).toLocaleString('it-IT')}</span>
                   </div>
-                  <p className="text-sm text-slate-600">{log.description}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{log.description}</p>
                 </div>
               </div>
             ))

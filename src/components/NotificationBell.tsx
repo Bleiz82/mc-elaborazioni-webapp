@@ -152,24 +152,24 @@ export default function NotificationBell() {
     <div className="relative" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+        className="relative p-2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
       >
         <Bell className="w-6 h-6" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+          <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white dark:border-slate-900">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50">
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-            <h3 className="font-bold text-slate-900">Notifiche</h3>
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
+          <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
+            <h3 className="font-bold text-slate-900 dark:text-slate-100">Notifiche</h3>
             {unreadCount > 0 && (
               <button 
                 onClick={handleMarkAllAsRead}
-                className="text-xs font-medium text-sky-600 hover:text-sky-700 flex items-center gap-1"
+                className="text-xs font-medium text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 flex items-center gap-1"
               >
                 <Check className="w-3 h-3" /> Segna tutte come lette
               </button>
@@ -178,12 +178,12 @@ export default function NotificationBell() {
 
           <div className="max-h-[400px] overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="p-8 text-center text-slate-500">
-                <Bell className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+              <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+                <Bell className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
                 <p className="text-sm">Nessuna notifica</p>
               </div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-100 dark:divide-slate-700">
                 {notifications.map(notification => (
                   <div 
                     key={notification.id}
@@ -191,8 +191,8 @@ export default function NotificationBell() {
                       if (!notification.isRead) handleMarkAsRead(notification.id);
                     }}
                     className={clsx(
-                      "p-4 hover:bg-slate-50 transition-colors cursor-pointer flex gap-3",
-                      !notification.isRead ? "bg-sky-50/50" : ""
+                      "p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer flex gap-3",
+                      !notification.isRead ? "bg-sky-50/50 dark:bg-sky-900/20" : ""
                     )}
                   >
                     <div className="mt-1">
@@ -201,14 +201,14 @@ export default function NotificationBell() {
                     <div className="flex-1 min-w-0">
                       <p className={clsx(
                         "text-sm mb-0.5",
-                        !notification.isRead ? "font-bold text-slate-900" : "font-medium text-slate-700"
+                        !notification.isRead ? "font-bold text-slate-900 dark:text-slate-100" : "font-medium text-slate-700 dark:text-slate-300"
                       )}>
                         {notification.title}
                       </p>
-                      <p className="text-sm text-slate-500 line-clamp-2 mb-1">
+                      <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-1">
                         {notification.message}
                       </p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 dark:text-slate-500">
                         {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true, locale: it })}
                       </p>
                     </div>

@@ -123,13 +123,13 @@ export default function ClientPayments() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'da_pagare':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">Da Pagare</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400">Da Pagare</span>;
       case 'in_elaborazione':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">In Elaborazione</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">In Elaborazione</span>;
       case 'pagata':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800">Pagata</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400">Pagata</span>;
       case 'scaduta':
-        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Scaduta</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400">Scaduta</span>;
       default:
         return null;
     }
@@ -145,11 +145,11 @@ export default function ClientPayments() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200">
+      <div className="flex border-b border-slate-200 dark:border-slate-700">
         <button 
           onClick={() => setActiveTab('da_pagare')}
           className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
-            activeTab === 'da_pagare' ? 'border-sky-500 text-sky-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+            activeTab === 'da_pagare' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
           }`}
         >
           Da Pagare
@@ -157,7 +157,7 @@ export default function ClientPayments() {
         <button 
           onClick={() => setActiveTab('pagate')}
           className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
-            activeTab === 'pagate' ? 'border-sky-500 text-sky-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+            activeTab === 'pagate' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
           }`}
         >
           Pagate
@@ -165,7 +165,7 @@ export default function ClientPayments() {
         <button 
           onClick={() => setActiveTab('tutte')}
           className={`flex-1 py-3 text-sm font-medium text-center border-b-2 transition-colors ${
-            activeTab === 'tutte' ? 'border-sky-500 text-sky-600' : 'border-transparent text-slate-500 hover:text-slate-700'
+            activeTab === 'tutte' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
           }`}
         >
           Tutte
@@ -177,37 +177,37 @@ export default function ClientPayments() {
         {loading ? (
           <div className="space-y-4">
             {[1, 2].map(i => (
-              <div key={i} className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-1/3 mb-3"></div>
-                <div className="h-3 bg-slate-200 rounded w-2/3 mb-4"></div>
+              <div key={i} className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm animate-pulse">
+                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3 mb-3"></div>
+                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/3 mb-4"></div>
                 <div className="flex justify-between items-center">
-                  <div className="h-3 bg-slate-200 rounded w-1/4"></div>
-                  <div className="h-5 bg-slate-200 rounded w-1/4"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
+                  <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
                 </div>
               </div>
             ))}
           </div>
         ) : filteredInvoices.length === 0 ? (
-          <div className="bg-white p-8 rounded-xl border border-slate-100 shadow-sm text-center">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
-              <FileText className="w-8 h-8 text-slate-300" />
+          <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
+            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <FileText className="w-8 h-8 text-slate-300 dark:text-slate-600" />
             </div>
-            <p className="text-slate-500 text-sm">Nessuna parcella trovata</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Nessuna parcella trovata</p>
           </div>
         ) : (
           <div className="space-y-4">
             {filteredInvoices.map(invoice => (
-              <div key={invoice.id} className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+              <div key={invoice.id} className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-bold text-slate-900">Parcella #{invoice.invoice_number}</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100">Parcella #{invoice.invoice_number}</span>
                   {getStatusBadge(invoice.status)}
                 </div>
-                <p className="text-sm text-slate-600 mb-4">{invoice.description}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{invoice.description}</p>
                 <div className="flex justify-between items-end mb-4">
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
                     Scadenza: {format(new Date(invoice.due_date), 'dd MMM yyyy', { locale: it })}
                   </span>
-                  <span className="text-lg font-bold text-slate-900">
+                  <span className="text-lg font-bold text-slate-900 dark:text-slate-100">
                     € {invoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                   </span>
                 </div>
@@ -225,13 +225,13 @@ export default function ClientPayments() {
                 ) : invoice.status === 'pagata' ? (
                   <button 
                     onClick={() => generateInvoicePDF(invoice)}
-                    className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 rounded-lg h-12 font-medium hover:bg-slate-50 active:scale-95 transition-all"
+                    className="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg h-12 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all"
                   >
                     <Download className="w-5 h-5" />
                     Scarica Ricevuta
                   </button>
                 ) : (
-                  <button disabled className="w-full bg-slate-100 text-slate-400 rounded-lg h-12 font-semibold cursor-not-allowed">
+                  <button disabled className="w-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 rounded-lg h-12 font-semibold cursor-not-allowed">
                     In Elaborazione
                   </button>
                 )}
@@ -253,9 +253,9 @@ export default function ClientPayments() {
               }
             }}
           />
-          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50 p-6 shadow-2xl transform transition-transform animate-in slide-in-from-bottom-full duration-300">
+          <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 rounded-t-2xl z-50 p-6 shadow-2xl transform transition-transform animate-in slide-in-from-bottom-full duration-300">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                 {showStripeForm ? 'Inserisci i dati della carta' : 'Scegli metodo di pagamento'}
               </h3>
               <button 
@@ -265,7 +265,7 @@ export default function ClientPayments() {
                     setShowStripeForm(false);
                   }
                 }}
-                className="p-2 text-slate-400 hover:text-slate-600 rounded-full bg-slate-50"
+                className="p-2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 rounded-full bg-slate-50 dark:bg-slate-700"
                 disabled={isProcessing}
               >
                 <X className="w-5 h-5" />
@@ -286,41 +286,41 @@ export default function ClientPayments() {
             ) : (
               <>
                 <div className="space-y-3 mb-6">
-                  <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'carta' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                  <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'carta' ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}>
                     <input 
                       type="radio" 
                       name="payment_method" 
                       value="carta" 
                       checked={paymentMethod === 'carta'}
                       onChange={() => setPaymentMethod('carta')}
-                      className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                      className="w-4 h-4 text-sky-600 border-slate-300 dark:border-slate-600 focus:ring-sky-500"
                     />
                     <div className="ml-3 flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
-                        <CreditCard className="w-5 h-5 text-slate-600" />
+                      <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 flex items-center justify-center shadow-sm">
+                        <CreditCard className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                       </div>
-                      <span className="font-medium text-slate-900">Carta di Credito / Debito</span>
+                      <span className="font-medium text-slate-900 dark:text-slate-100">Carta di Credito / Debito</span>
                     </div>
                   </label>
 
-                  <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                  <label className={`flex items-center p-4 border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}>
                     <input 
                       type="radio" 
                       name="payment_method" 
                       value="paypal" 
                       checked={paymentMethod === 'paypal'}
                       onChange={() => setPaymentMethod('paypal')}
-                      className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                      className="w-4 h-4 text-sky-600 border-slate-300 dark:border-slate-600 focus:ring-sky-500"
                     />
                     <div className="ml-3 flex items-center gap-3">
                       <div className="w-10 h-10 bg-[#003087] rounded-lg flex items-center justify-center shadow-sm">
                         <span className="text-white font-bold italic text-lg">P</span>
                       </div>
-                      <span className="font-medium text-slate-900">PayPal</span>
+                      <span className="font-medium text-slate-900 dark:text-slate-100">PayPal</span>
                     </div>
                   </label>
 
-                  <label className={`flex flex-col border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bonifico' ? 'border-sky-500 bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                  <label className={`flex flex-col border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'bonifico' ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}>
                     <div className="flex items-center p-4" onClick={() => setPaymentMethod('bonifico')}>
                       <input 
                         type="radio" 
@@ -328,38 +328,38 @@ export default function ClientPayments() {
                         value="bonifico" 
                         checked={paymentMethod === 'bonifico'}
                         onChange={() => setPaymentMethod('bonifico')}
-                        className="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                        className="w-4 h-4 text-sky-600 border-slate-300 dark:border-slate-600 focus:ring-sky-500"
                       />
                       <div className="ml-3 flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center shadow-sm">
-                          <FileText className="w-5 h-5 text-slate-600" />
+                        <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 flex items-center justify-center shadow-sm">
+                          <FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                         </div>
-                        <span className="font-medium text-slate-900">Bonifico Bancario</span>
+                        <span className="font-medium text-slate-900 dark:text-slate-100">Bonifico Bancario</span>
                       </div>
                     </div>
                     
                     {paymentMethod === 'bonifico' && (
-                      <div className="px-4 pb-4 pt-2 border-t border-sky-100">
-                        <div className="bg-white p-4 rounded-lg border border-sky-100 space-y-3">
+                      <div className="px-4 pb-4 pt-2 border-t border-sky-100 dark:border-sky-900/30">
+                        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-sky-100 dark:border-sky-900/50 space-y-3">
                           <div>
-                            <p className="text-xs text-slate-500 mb-1">Intestatario</p>
-                            <p className="text-sm font-medium text-slate-900">M&C Elaborazioni e Consulenze Aziendali Srl</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Intestatario</p>
+                            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">M&C Elaborazioni e Consulenze Aziendali Srl</p>
                           </div>
                           <div>
-                            <p className="text-xs text-slate-500 mb-1">IBAN</p>
-                            <div className="flex items-center justify-between bg-slate-50 p-2 rounded border border-slate-100">
-                              <p className="text-sm font-mono font-medium text-slate-900">IT00 A000 0000 0000 0000 0000 000</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">IBAN</p>
+                            <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900/50 p-2 rounded border border-slate-100 dark:border-slate-700">
+                              <p className="text-sm font-mono font-medium text-slate-900 dark:text-slate-100">IT00 A000 0000 0000 0000 0000 000</p>
                               <button 
                                 onClick={(e) => { e.preventDefault(); copyToClipboard('IT00A0000000000000000000000'); }}
-                                className="p-1.5 text-sky-600 hover:bg-sky-50 rounded"
+                                className="p-1.5 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded"
                               >
                                 <Copy className="w-4 h-4" />
                               </button>
                             </div>
                           </div>
                           <div>
-                            <p className="text-xs text-slate-500 mb-1">Causale</p>
-                            <p className="text-sm font-medium text-slate-900">Parcella {selectedInvoice.invoice_number}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Causale</p>
+                            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Parcella {selectedInvoice.invoice_number}</p>
                           </div>
                         </div>
                       </div>

@@ -53,32 +53,32 @@ const SortableItem: React.FC<{ item: any }> = ({ item }) => {
       style={style} 
       {...attributes} 
       {...listeners}
-      className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-grab active:cursor-grabbing hover:border-sky-300 transition-colors"
+      className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm cursor-grab active:cursor-grabbing hover:border-sky-300 dark:hover:border-sky-500 transition-colors"
     >
       <div className="flex items-start justify-between mb-2">
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-slate-100 text-slate-600">
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
           {item.type}
         </span>
         {item.aiActive && (
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-100 text-indigo-700" title="Subagente Notifica Attivo">
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400" title="Subagente Notifica Attivo">
             AI
           </span>
         )}
       </div>
-      <h4 className="text-sm font-medium text-slate-900 mb-1">{item.title}</h4>
-      <p className="text-xs text-slate-500 mb-3">{item.client}</p>
+      <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">{item.title}</h4>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{item.client}</p>
       
-      <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100">
+      <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100 dark:border-slate-700">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${
             item.priority === 'alta' ? 'bg-red-500' : 
             item.priority === 'media' ? 'bg-amber-500' : 'bg-emerald-500'
           }`} />
-          <span className="text-xs text-slate-500 flex items-center gap-1">
+          <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
             <Clock className="w-3 h-3" /> {item.date}
           </span>
         </div>
-        <div className="flex items-center text-slate-400">
+        <div className="flex items-center text-slate-400 dark:text-slate-500">
           <Paperclip className="w-3.5 h-3.5" />
         </div>
       </div>
@@ -139,11 +139,11 @@ export default function PracticesKanban() {
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Pratiche</h1>
-          <p className="text-slate-500 text-sm mt-1">Gestione flusso di lavoro pratiche</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Pratiche</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Gestione flusso di lavoro pratiche</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-3 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center gap-2 bg-white">
+          <button className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 bg-white dark:bg-slate-900 transition-colors">
             <Filter className="w-4 h-4" />
             Filtri
           </button>
@@ -167,13 +167,13 @@ export default function PracticesKanban() {
               return (
                 <div key={column.id} className="flex flex-col w-80 flex-shrink-0 max-h-full">
                   <div className="flex items-center justify-between mb-3 px-1">
-                    <h3 className="font-semibold text-slate-700">{column.title}</h3>
-                    <span className="bg-slate-200 text-slate-600 text-xs font-medium px-2 py-0.5 rounded-full">
+                    <h3 className="font-semibold text-slate-700 dark:text-slate-300">{column.title}</h3>
+                    <span className="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-xs font-medium px-2 py-0.5 rounded-full">
                       {columnItems.length}
                     </span>
                   </div>
                   
-                  <div className="bg-slate-100/50 rounded-2xl p-3 flex-1 overflow-y-auto border border-slate-200/60">
+                  <div className="bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl p-3 flex-1 overflow-y-auto border border-slate-200/60 dark:border-slate-700/50">
                     <SortableContext 
                       id={column.id}
                       items={columnItems.map(i => i.id)}
@@ -193,14 +193,14 @@ export default function PracticesKanban() {
           
           <DragOverlay>
             {activeItem ? (
-              <div className="bg-white p-4 rounded-xl border-2 border-sky-500 shadow-xl opacity-90 rotate-2 scale-105">
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border-2 border-sky-500 shadow-xl opacity-90 rotate-2 scale-105">
                 <div className="flex items-start justify-between mb-2">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-slate-100 text-slate-600">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                     {activeItem.type}
                   </span>
                 </div>
-                <h4 className="text-sm font-medium text-slate-900 mb-1">{activeItem.title}</h4>
-                <p className="text-xs text-slate-500">{activeItem.client}</p>
+                <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">{activeItem.title}</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{activeItem.client}</p>
               </div>
             ) : null}
           </DragOverlay>

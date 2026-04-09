@@ -54,32 +54,32 @@ export default function ClientDeadlines() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'fiscale': return <Building className="w-5 h-5 text-sky-600" />;
-      case 'contributiva': return <FileText className="w-5 h-5 text-indigo-600" />;
-      case 'documentale': return <FileText className="w-5 h-5 text-amber-600" />;
-      case 'pagamento': return <CreditCard className="w-5 h-5 text-emerald-600" />;
-      case 'sicurezza': return <Shield className="w-5 h-5 text-red-600" />;
-      default: return <CalendarClock className="w-5 h-5 text-slate-600" />;
+      case 'fiscale': return <Building className="w-5 h-5 text-sky-600 dark:text-sky-400" />;
+      case 'contributiva': return <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />;
+      case 'documentale': return <FileText className="w-5 h-5 text-amber-600 dark:text-amber-400" />;
+      case 'pagamento': return <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />;
+      case 'sicurezza': return <Shield className="w-5 h-5 text-red-600 dark:text-red-400" />;
+      default: return <CalendarClock className="w-5 h-5 text-slate-600 dark:text-slate-400" />;
     }
   };
 
   const getCountdownInfo = (dueDateStr: string, status: string) => {
-    if (status === 'completata') return { text: 'Completata', color: 'text-emerald-600', bg: 'bg-emerald-50' };
+    if (status === 'completata') return { text: 'Completata', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30' };
     
     const dueDate = startOfDay(parseISO(dueDateStr));
     const today = startOfDay(new Date());
     const days = differenceInDays(dueDate, today);
     
-    if (days < 0) return { text: 'SCADUTA', color: 'text-red-600 font-bold', bg: 'bg-red-50' };
-    if (days === 0) return { text: 'DOMANI', color: 'text-red-600 font-bold', bg: 'bg-red-50' }; // Assuming DOMANI means tomorrow, but 0 is today. Let's say OGGI
-    if (days === 1) return { text: 'DOMANI', color: 'text-orange-600 font-bold', bg: 'bg-orange-50' };
-    if (days <= 5) return { text: `tra ${days} giorni`, color: 'text-amber-600 font-medium', bg: 'bg-amber-50' };
-    return { text: `tra ${days} giorni`, color: 'text-emerald-600', bg: 'bg-emerald-50' };
+    if (days < 0) return { text: 'SCADUTA', color: 'text-red-600 dark:text-red-400 font-bold', bg: 'bg-red-50 dark:bg-red-900/30' };
+    if (days === 0) return { text: 'DOMANI', color: 'text-red-600 dark:text-red-400 font-bold', bg: 'bg-red-50 dark:bg-red-900/30' }; // Assuming DOMANI means tomorrow, but 0 is today. Let's say OGGI
+    if (days === 1) return { text: 'DOMANI', color: 'text-orange-600 dark:text-orange-400 font-bold', bg: 'bg-orange-50 dark:bg-orange-900/30' };
+    if (days <= 5) return { text: `tra ${days} giorni`, color: 'text-amber-600 dark:text-amber-400 font-medium', bg: 'bg-amber-50 dark:bg-amber-900/30' };
+    return { text: `tra ${days} giorni`, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30' };
   };
 
   return (
     <div className="space-y-6 max-w-lg mx-auto pb-20">
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex justify-center">
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-center">
         <DayPicker
           mode="single"
           locale={it}
@@ -98,7 +98,7 @@ export default function ClientDeadlines() {
               
               return (
                 <div className="relative w-full h-full flex items-center justify-center">
-                  <span>{date.getDate()}</span>
+                  <span className="text-slate-900 dark:text-slate-100">{date.getDate()}</span>
                   {dayDeads.length > 0 && (
                     <div className="absolute bottom-0 w-1 h-1 rounded-full bg-sky-500" />
                   )}
@@ -110,7 +110,7 @@ export default function ClientDeadlines() {
       </div>
 
       <div>
-        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 px-1">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-3 px-1">
           Scadenze di {format(selectedMonth, 'MMMM yyyy', { locale: it })}
         </h3>
         
@@ -119,9 +119,9 @@ export default function ClientDeadlines() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500"></div>
           </div>
         ) : monthDeadlines.length === 0 ? (
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
-            <CalendarClock className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500">Nessuna scadenza in questo mese</p>
+          <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center">
+            <CalendarClock className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+            <p className="text-slate-500 dark:text-slate-400">Nessuna scadenza in questo mese</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -129,7 +129,7 @@ export default function ClientDeadlines() {
               const countdown = getCountdownInfo(deadline.due_date, deadline.status);
               
               return (
-                <div key={deadline.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden">
+                <div key={deadline.id} className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
                   {deadline.priority === 'urgente' && deadline.status !== 'completata' && (
                     <div className="absolute top-0 left-0 w-1 h-full bg-red-500" />
                   )}
@@ -139,21 +139,21 @@ export default function ClientDeadlines() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-1">
-                        <h4 className="font-bold text-slate-900 truncate">{deadline.title}</h4>
+                        <h4 className="font-bold text-slate-900 dark:text-slate-100 truncate">{deadline.title}</h4>
                         <span className={clsx("text-xs whitespace-nowrap", countdown.color)}>
                           {countdown.text}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                           {deadline.type}
                         </span>
                         {deadline.priority === 'urgente' && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">
                             Urgente
                           </span>
                         )}
-                        <span className="text-xs text-slate-500 ml-auto">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 ml-auto">
                           {format(parseISO(deadline.due_date), 'dd MMM yyyy', { locale: it })}
                         </span>
                       </div>

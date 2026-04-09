@@ -41,57 +41,57 @@ export default function ClientHome() {
 
       {/* Quick Actions Grid */}
       <div className="grid grid-cols-2 gap-4">
-        <Link to="/client/documents" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-3 hover:border-sky-200 transition-colors active:scale-95">
-          <div className="w-12 h-12 bg-sky-50 rounded-full flex items-center justify-center">
-            <Upload className="w-6 h-6 text-sky-600" />
+        <Link to="/client/documents" className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center gap-3 hover:border-sky-200 dark:hover:border-sky-700 transition-colors active:scale-95">
+          <div className="w-12 h-12 bg-sky-50 dark:bg-sky-900/30 rounded-full flex items-center justify-center">
+            <Upload className="w-6 h-6 text-sky-600 dark:text-sky-400" />
           </div>
-          <span className="text-sm font-medium text-slate-700 text-center">Carica<br/>Documento</span>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 text-center">Carica<br/>Documento</span>
         </Link>
         
-        <Link to="/client/payments" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-3 hover:border-sky-200 transition-colors active:scale-95">
-          <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
-            <CreditCard className="w-6 h-6 text-emerald-600" />
+        <Link to="/client/payments" className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center gap-3 hover:border-sky-200 dark:hover:border-sky-700 transition-colors active:scale-95">
+          <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
+            <CreditCard className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <span className="text-sm font-medium text-slate-700 text-center">Paga<br/>Parcella</span>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 text-center">Paga<br/>Parcella</span>
         </Link>
         
-        <Link to="/client/deadlines" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-3 hover:border-sky-200 transition-colors active:scale-95">
-          <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center">
-            <CalendarClock className="w-6 h-6 text-amber-600" />
+        <Link to="/client/deadlines" className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center gap-3 hover:border-sky-200 dark:hover:border-sky-700 transition-colors active:scale-95">
+          <div className="w-12 h-12 bg-amber-50 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+            <CalendarClock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
           </div>
-          <span className="text-sm font-medium text-slate-700 text-center">Le Mie<br/>Scadenze</span>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 text-center">Le Mie<br/>Scadenze</span>
         </Link>
         
-        <Link to="/client/chat" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-3 hover:border-sky-200 transition-colors active:scale-95">
-          <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center">
-            <MessageSquare className="w-6 h-6 text-indigo-600" />
+        <Link to="/client/chat" className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center gap-3 hover:border-sky-200 dark:hover:border-sky-700 transition-colors active:scale-95">
+          <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
+            <MessageSquare className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
           </div>
-          <span className="text-sm font-medium text-slate-700 text-center">Chatta con<br/>lo Studio</span>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 text-center">Chatta con<br/>lo Studio</span>
         </Link>
       </div>
 
       {/* Upcoming Deadlines */}
       <div>
         <div className="flex items-center justify-between mb-3 px-1">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Prossime Scadenze</h3>
-          <Link to="/client/deadlines" className="text-xs text-sky-600 font-medium flex items-center">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Prossime Scadenze</h3>
+          <Link to="/client/deadlines" className="text-xs text-sky-600 dark:text-sky-400 font-medium flex items-center">
             Vedi tutte <ChevronRight className="w-3 h-3 ml-0.5" />
           </Link>
         </div>
         <div className="space-y-3">
           {upcomingDeadlines.map(deadline => (
-            <div key={deadline.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div key={deadline.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                  <CalendarClock className="w-5 h-5 text-amber-600" />
+                <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                  <CalendarClock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{deadline.title}</p>
-                  <p className="text-xs text-slate-500">{deadline.date}</p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{deadline.title}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{deadline.date}</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-red-50 text-red-600">
+                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400">
                   -{deadline.daysLeft} gg
                 </span>
               </div>
@@ -103,23 +103,23 @@ export default function ClientHome() {
       {/* Recent Communications */}
       <div>
         <div className="flex items-center justify-between mb-3 px-1">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Ultime Comunicazioni</h3>
-          <Link to="/client/chat" className="text-xs text-sky-600 font-medium flex items-center">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Ultime Comunicazioni</h3>
+          <Link to="/client/chat" className="text-xs text-sky-600 dark:text-sky-400 font-medium flex items-center">
             Vai alla chat <ChevronRight className="w-3 h-3 ml-0.5" />
           </Link>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 divide-y divide-slate-100">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
           {recentMessages.map(msg => (
             <div key={msg.id} className="p-4 flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
-                <User className="w-4 h-4 text-slate-500" />
+              <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+                <User className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-medium text-slate-900">{msg.sender}</p>
-                  <p className="text-xs text-slate-400">{msg.time}</p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{msg.sender}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">{msg.time}</p>
                 </div>
-                <p className="text-sm text-slate-600 line-clamp-2">{msg.text}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{msg.text}</p>
               </div>
             </div>
           ))}

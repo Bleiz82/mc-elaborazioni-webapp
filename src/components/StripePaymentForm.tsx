@@ -63,13 +63,13 @@ export default function StripePaymentForm({ invoice, onSuccess, onCancel }: Stri
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
         <CardElement 
           options={{
             style: {
               base: {
                 fontSize: '16px',
-                color: '#334155',
+                color: '#334155', // Note: in a real app you might want to dynamically change this based on theme
                 '::placeholder': {
                   color: '#94a3b8',
                 },
@@ -83,7 +83,7 @@ export default function StripePaymentForm({ invoice, onSuccess, onCancel }: Stri
       </div>
 
       {errorMessage && (
-        <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
+        <div className="text-red-500 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
           {errorMessage}
         </div>
       )}
@@ -93,14 +93,14 @@ export default function StripePaymentForm({ invoice, onSuccess, onCancel }: Stri
           type="button"
           onClick={onCancel}
           disabled={isProcessing}
-          className="flex-1 py-3 px-4 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors disabled:opacity-50"
+          className="flex-1 py-3 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
         >
           Annulla
         </button>
         <button
           type="submit"
           disabled={!stripe || isProcessing}
-          className="flex-1 py-3 px-4 bg-sky-500 text-white rounded-xl font-semibold hover:bg-sky-600 transition-colors disabled:opacity-50 flex items-center justify-center"
+          className="flex-1 py-3 px-4 bg-sky-500 text-white rounded-xl font-semibold hover:bg-sky-600 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center"
         >
           {isProcessing ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

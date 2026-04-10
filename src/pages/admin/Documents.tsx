@@ -199,16 +199,26 @@ export default function AdminDocuments() {
             (error) => reject(error),
             async () => {
               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              const storagePath = `documents/${uploadClient}/${fileId}_${file.name}`;
+              
               await addDoc(collection(db, 'documents'), {
                 name: file.name,
+                fileName: file.name,        // manteniamo per retrocompatibilità
                 url: downloadURL,
+                fileUrl: downloadURL,       // manteniamo per retrocompatibilità
+                storage_path: storagePath,  // NUOVO — serve all'OCR
                 type: file.type,
+                fileType: file.type,        // manteniamo per retrocompatibilità
                 size: file.size,
+                fileSize: file.size,        // manteniamo per retrocompatibilità
                 client_id: uploadClient,
+                clientId: uploadClient,     // manteniamo per retrocompatibilità
                 category: uploadCategory,
                 status: 'approvato', // Admin uploads are automatically approved
                 uploaded_by: user.uid,
+                uploadedBy: user.uid,       // manteniamo per retrocompatibilità
                 created_at: new Date().toISOString(),
+                createdAt: new Date().toISOString(), // manteniamo per retrocompatibilità
                 notes: uploadNotes
               });
               successCount++;

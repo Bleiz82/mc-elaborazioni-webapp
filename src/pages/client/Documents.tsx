@@ -11,17 +11,18 @@ import { it } from 'date-fns/locale';
 
 interface DocumentData {
   id: string;
-  clientId: string;
-  uploadedBy: string;
-  fileName: string;
-  fileUrl: string;
-  fileType: string;
-  fileSize: number;
+  client_id: string;
+  uploaded_by: string;
+  name: string;
+  url: string;
+  type: string;
+  size: number;
   category: string;
   status: 'caricato' | 'in_revisione' | 'approvato' | 'da_rifare';
-  adminNote?: string;
+  admin_note?: string;
   version: number;
-  createdAt: string;
+  created_at: string;
+  storage_path?: string;
 }
 
 export default function ClientDocuments() {
@@ -40,8 +41,8 @@ export default function ClientDocuments() {
 
     const q = query(
       collection(db, 'documents'),
-      where('clientId', '==', user.uid),
-      orderBy('createdAt', 'desc')
+      where('client_id', '==', user.uid),
+      orderBy('created_at', 'desc')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -82,7 +83,8 @@ export default function ClientDocuments() {
 
       const timestamp = Date.now();
       const safeFileName = fileToUpload.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const storageRef = ref(storage, `documents/${user.uid}/${timestamp}_${safeFileName}`);
+      const storagePath = `documents/${user.uid}/${timestamp}_${safeFileName}`;
+      const storageRef = ref(storage, storagePath);
       
       const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
 
@@ -100,17 +102,26 @@ export default function ClientDocuments() {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           
           await addDoc(collection(db, 'documents'), {
-            clientId: user.uid,
-            uploadedBy: user.uid,
-            fileName: file.name,
-            fileUrl: downloadURL,
-            fileType: fileToUpload.type,
-            fileSize: fileToUpload.size,
+            name: file.name,
+            fileName: file.name,        // manteniamo per retrocompatibilità
+            url: downloadURL,
+            fileUrl: downloadURL,       // manteniamo per retrocompatibilità
+            storage_path: storagePath,  // NUOVO — serve all'OCR
+            type: fileToUpload.type,
+            fileType: fileToUpload.type, // manteniamo per retrocompatibilità
+            size: fileToUpload.size,
+            fileSize: fileToUpload.size, // manteniamo per retrocompatibilità
+            client_id: user.uid,
+            clientId: user.uid,          // manteniamo per retrocompatibilità
             category: 'altro',
             status: 'caricato',
-            adminNote: null,
+            uploaded_by: user.uid,
+            uploadedBy: user.uid,        // manteniamo per retrocompatibilità
+            admin_note: null,
+            adminNote: null,             // manteniamo per retrocompatibilità
             version: 1,
-            createdAt: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            createdAt: new Date().toISOString(), // manteniamo per retrocompatibilità
           });
 
           toast.success('Documento caricato con successo');
@@ -268,19 +279,19 @@ export default function ClientDocuments() {
               <div key={doc.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm relative">
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-12 bg-slate-50 dark:bg-slate-700/50 rounded-xl flex items-center justify-center flex-shrink-0">
-                    {getFileIcon(doc.fileType)}
+                    {getFileIcon(doc.type)}
                   </div>
                   <div className="flex-1 min-w-0 pr-8">
-                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate" title={doc.fileName}>{doc.fileName}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate" title={doc.name}>{doc.name}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      {format(new Date(doc.createdAt), 'dd MMM yyyy', { locale: it })}
+                      {format(new Date(doc.created_at), 'dd MMM yyyy', { locale: it })}
                     </p>
                     <div className="mt-2">
                       {getStatusBadge(doc.status)}
                     </div>
-                    {doc.status === 'da_rifare' && doc.adminNote && (
+                    {doc.status === 'da_rifare' && doc.admin_note && (
                       <p className="text-xs text-red-600 dark:text-red-400 mt-1.5 bg-red-50 dark:bg-red-900/30 p-2 rounded-md border border-red-100 dark:border-red-900/50">
-                        {doc.adminNote}
+                        {doc.admin_note}
                       </p>
                     )}
                   </div>
@@ -299,7 +310,7 @@ export default function ClientDocuments() {
                       <div className="fixed inset-0 z-10" onClick={() => setMenuOpenId(null)}></div>
                       <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 z-20 py-1">
                         <a 
-                          href={doc.fileUrl} 
+                          href={doc.url} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
@@ -308,7 +319,7 @@ export default function ClientDocuments() {
                           <Download className="w-4 h-4" /> Scarica
                         </a>
                         <button 
-                          onClick={() => handleDelete(doc.id, doc.fileUrl)}
+                          onClick={() => handleDelete(doc.id, doc.url)}
                           className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 text-left"
                         >
                           <Trash2 className="w-4 h-4" /> Elimina

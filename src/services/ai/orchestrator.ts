@@ -1,4 +1,4 @@
-import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
+﻿import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
 import { collection, getDocs, query, where, addDoc, updateDoc, doc, setDoc } from 'firebase/firestore';
 import { getAIProvider, chatWithFallback } from './aiProvider';
 import { logActivity } from './utils';
@@ -139,7 +139,7 @@ export async function runOrchestrator() {
     const decisionStr = await aiProvider.chat([
       {
         role: 'system',
-        content: `Sei l'orchestratore AI di uno studio di consulenza aziendale "M&C Elaborazioni e Consulenze Aziendali" a Senorbì, Sardegna. Il tuo compito è analizzare lo stato attuale dello studio e decidere quali subagenti AI attivare.
+        content: `Sei l'orchestratore AI di uno studio di consulenza aziendale "M&C Elaborazioni e Consulenze Aziendali" a SenorbÃ¬, Sardegna. Il tuo compito Ã¨ analizzare lo stato attuale dello studio e decidere quali subagenti AI attivare.
 
 I subagenti disponibili sono:
 1. agent_scadenze - Monitora e notifica scadenze
@@ -148,7 +148,7 @@ I subagenti disponibili sono:
 4. agent_onboarding - Guida nuovi clienti
 5. agent_report - Genera report
 6. agent_comunicazioni - Gestisce comunicazioni automatiche
-7. agent_compliance - Verifica conformità documentale
+7. agent_compliance - Verifica conformitÃ  documentale
 8. agent_assistente - Risponde ai clienti
 
 Analizza il contesto e rispondi SOLO con un JSON array di azioni:
@@ -210,27 +210,11 @@ Sii efficiente: attiva solo gli agenti necessari. NON includere markdown come \`
   }
 }
 
-// Global interval reference
-let orchestratorInterval: any = null;
-
-export function startOrchestrator(intervalMinutes = 10) {
-  if (orchestratorInterval) clearInterval(orchestratorInterval);
-  
-  // Run immediately once
-  runOrchestrator();
-  
-  // Then schedule
-  orchestratorInterval = setInterval(() => {
-    runOrchestrator();
-  }, intervalMinutes * 60 * 1000);
-  
-  console.log(`Orchestrator started with interval ${intervalMinutes}m`);
+// DEPRECATO - tutto gira sulle Cloud Functions
+export function startOrchestrator(_intervalMinutes = 10) {
+  console.warn('startOrchestrator() deprecato. Usa la Cloud Function orchestratorScheduled.');
 }
 
 export function stopOrchestrator() {
-  if (orchestratorInterval) {
-    clearInterval(orchestratorInterval);
-    orchestratorInterval = null;
-    console.log("Orchestrator stopped");
-  }
+  console.warn('stopOrchestrator() deprecato.');
 }

@@ -7,7 +7,8 @@ import {
 import { toast } from 'sonner';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
 import { collection, query, orderBy, limit, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { runOrchestrator, executeSubagent } from '../../services/ai/orchestrator';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { executeSubagent } from '../../services/ai/orchestrator';
 
 interface Subagent {
   id: string;
@@ -121,7 +122,6 @@ export default function AISubagents() {
   ]);
 
   useEffect(() => {
-    // Fetch orchestrator status
     const fetchStatus = async () => {
       const docRef = doc(db, 'studio_settings', 'orchestrator_status');
       const docSnap = await getDoc(docRef);
@@ -132,7 +132,6 @@ export default function AISubagents() {
     };
     fetchStatus();
 
-    // Listen to activity logs
     const q = query(collection(db, 'ai_activity_log'), orderBy('created_at', 'desc'), limit(50));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const logsData: ActivityLog[] = [];
@@ -142,8 +141,6 @@ export default function AISubagents() {
       snapshot.forEach((docSnap) => {
         const data = docSnap.data() as Omit<ActivityLog, 'id'>;
         logsData.push({ id: docSnap.id, ...data });
-        
-        // Count actions today (simplified, just counting recent logs)
         actionCounts[data.subagent_id] = (actionCounts[data.subagent_id] || 0) + 1;
         totalActions++;
       });
@@ -166,14 +163,15 @@ export default function AISubagents() {
     const newState = !orchestratorStatus.enabled;
     setOrchestratorStatus(prev => ({ ...prev, enabled: newState }));
     toast.success(newState ? 'Orchestratore attivato' : 'Orchestratore in pausa');
-    // In a real app, update Firestore settings
   };
 
   const handleRunOrchestrator = async () => {
     setIsOrchestratorRunning(true);
     toast.info('Ciclo orchestratore avviato...');
     try {
-      await runOrchestrator();
+      const functions = getFunctions();
+      const runManual = httpsCallable(functions, 'runOrchestratorManual');
+      await runManual();
       toast.success('Ciclo orchestratore completato');
     } catch (error) {
       toast.error('Errore durante il ciclo');

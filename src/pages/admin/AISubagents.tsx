@@ -217,16 +217,18 @@ export default function AISubagents() {
     }
   };
 
-  const handleRunAgent = async (agentId: string) => {
-    toast.info(`Esecuzione ${agentId} avviata...`);
-    try {
-      await executeSubagent(agentId, 'manual_trigger', {});
-      toast.success('Esecuzione completata');
-    } catch (error) {
-      console.error(`[Agent] Errore ${agentId}:`, error);
-      toast.error("Errore durante l'esecuzione");
-    }
-  };
+const handleRunAgent = async (agentId: string) => {
+  toast.info(`Esecuzione ${agentId} avviata...`);
+  try {
+    const functions = getFunctions();
+    const runManual = httpsCallable(functions, 'runOrchestratorManual');
+    await runManual({ agentId });
+    toast.success('Esecuzione completata');
+  } catch (error) {
+    console.error(`[Agent] Errore ${agentId}:`, error);
+    toast.error("Errore durante l'esecuzione");
+  }
+};
 
   const toggleAgentStatus = (id: string) => {
     setAgents((prev) =>

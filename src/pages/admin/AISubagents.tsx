@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Bot,
   Activity,
@@ -22,7 +22,7 @@ import {
   getDoc,
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { executeSubagent } from '../../services/ai/orchestrator';
+// import rimosso - AI gira solo su Cloud Functions
 
 interface Subagent {
   id: string;
@@ -107,7 +107,7 @@ const INITIAL_AGENTS: Subagent[] = [
   {
     id: 'agent_compliance',
     name: 'Agente Compliance',
-    description: 'Verifica conformità documentale e normativa',
+    description: 'Verifica conformitÃ  documentale e normativa',
     color: 'bg-indigo-500',
     status: 'active',
     lastRun: new Date().toISOString(),
@@ -297,7 +297,7 @@ const handleRunAgent = async (agentId: string) => {
                 <RefreshCw
                   className={`w-4 h-4 ${isOrchestratorRunning ? 'animate-spin' : ''}`}
                 />
-                {isOrchestratorRunning ? 'In esecuzione…' : 'Esegui Ciclo Ora'}
+                {isOrchestratorRunning ? 'In esecuzioneâ€¦' : 'Esegui Ciclo Ora'}
               </button>
             </div>
           </div>
@@ -456,7 +456,7 @@ const handleRunAgent = async (agentId: string) => {
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <h2 className="font-bold text-slate-900 dark:text-slate-100">
-            Log Attività Recenti
+            Log AttivitÃ  Recenti
           </h2>
           <button className="text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300">
             Vedi Tutti
@@ -465,7 +465,7 @@ const handleRunAgent = async (agentId: string) => {
         <div className="divide-y divide-slate-100 dark:divide-slate-700/50 max-h-96 overflow-y-auto">
           {logs.length === 0 ? (
             <div className="p-8 text-center text-slate-500 dark:text-slate-400">
-              Nessuna attività registrata di recente
+              Nessuna attivitÃ  registrata di recente
             </div>
           ) : (
             logs.map((log) => (
@@ -481,7 +481,7 @@ const handleRunAgent = async (agentId: string) => {
                     <span className="font-medium text-sm text-slate-900 dark:text-slate-100">
                       {log.subagent_id}
                     </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">•</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">â€¢</span>
                     <span className="text-xs text-slate-500 dark:text-slate-400">
                       {new Date(log.created_at).toLocaleString('it-IT')}
                     </span>

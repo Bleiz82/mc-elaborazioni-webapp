@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { 
   TrendingUp, Users, Kanban, CreditCard, 
-  AlertCircle, Clock, CheckCircle2, Bot, FolderOpen 
+  Clock, Bot
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { db } from '../../lib/firebase';
@@ -31,10 +31,7 @@ export default function AdminDashboard() {
 
         // 1. Fatturato Mensile
         const invoicesRef = collection(db, 'invoices');
-        const qMonthlyRevenue = query(
-          invoicesRef,
-          where('status', '==', 'pagata')
-        );
+        const qMonthlyRevenue = query(invoicesRef, where('status', '==', 'pagata'));
         const monthlyRevenueSnap = await getDocs(qMonthlyRevenue);
         let monthlyRevenue = 0;
         monthlyRevenueSnap.forEach(doc => {
@@ -64,22 +61,14 @@ export default function AdminDashboard() {
         const activePractices = activePracticesSnap.size;
 
         // 4. Pagamenti in Attesa
-        const qPendingPayments = query(
-          invoicesRef,
-          where('status', 'in', ['da_pagare', 'scaduta'])
-        );
+        const qPendingPayments = query(invoicesRef, where('status', 'in', ['da_pagare', 'scaduta']));
         const pendingPaymentsSnap = await getDocs(qPendingPayments);
         let pendingPayments = 0;
         pendingPaymentsSnap.forEach(doc => {
           pendingPayments += doc.data().total_amount || 0;
         });
 
-        setStats({
-          monthlyRevenue,
-          activeClients,
-          activePractices,
-          pendingPayments,
-        });
+        setStats({ monthlyRevenue, activeClients, activePractices, pendingPayments });
 
         // 5. Grafico Entrate ultimi 6 mesi
         const sixMonthsAgo = subMonths(startOfMonth(now), 5);
@@ -88,7 +77,6 @@ export default function AdminDashboard() {
           const d = subMonths(now, i);
           chartMap.set(format(d, 'MMM', { locale: it }), 0);
         }
-
         monthlyRevenueSnap.forEach(doc => {
           const data = doc.data();
           if (data.paid_at) {
@@ -101,20 +89,13 @@ export default function AdminDashboard() {
             }
           }
         });
-
         const newChartData = Array.from(chartMap.entries()).map(([name, entrate]) => ({
           name: name.charAt(0).toUpperCase() + name.slice(1),
           entrate
         }));
         setChartData(newChartData);
 
-        // 6. Prossime Scadenze
-        const deadlinesRef = collection(db, 'deadlines');
-        const qDeadlines = query(
-          deadlinesRef,
-          where('status', '!=', 'completata'),
-          orderBy('status'), // Required by Firestore when combining != and orderBy on different fields, but let's just fetch and sort in memory to avoid complex indexes
-        );
+        // 6. Prossime Scadenze (fetch semplice senza index composito)
         const deadlinesSnap = await getDocs(collection(db, 'deadlines'));
         const deadlinesList: any[] = [];
         deadlinesSnap.forEach(doc => {
@@ -126,7 +107,7 @@ export default function AdminDashboard() {
         deadlinesList.sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
         setUpcomingDeadlines(deadlinesList.slice(0, 5));
 
-        // 7. Attività Recenti
+        // 7. Attività Recenti AI
         const activityRef = collection(db, 'ai_activity_log');
         const qActivity = query(activityRef, orderBy('created_at', 'desc'), limit(5));
         const activitySnap = await getDocs(qActivity);
@@ -146,7 +127,7 @@ export default function AdminDashboard() {
         setAiAgents(agentsList);
 
       } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+        console.error('Error fetching dashboard data:', error);
       } finally {
         setLoading(false);
       }
@@ -179,16 +160,21 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h1>
+        {/* BUG FIX 3: "Attività" e "Panoramica" con accenti corretti */}
         <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Panoramica delle attività dello studio</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        {/* BUG FIX 1 & 2: € aggiunto su Fatturato Mensile e Pagamenti in Attesa */}
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fatturato Mensile</p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">€ {stats.monthlyRevenue.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
+                € {stats.monthlyRevenue.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+              </p>
             </div>
             <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -224,7 +210,9 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Pagamenti in Attesa</p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">€ {stats.pendingPayments.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
+                € {stats.pendingPayments.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+              </p>
             </div>
             <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
               <CreditCard className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -243,7 +231,7 @@ export default function AdminDashboard() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" strokeOpacity={0.2} />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                <Tooltip 
+                <Tooltip
                   cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#1e293b', color: '#f8fafc' }}
                   formatter={(value: number) => [`€ ${value.toLocaleString('it-IT')}`, 'Entrate']}
@@ -266,7 +254,7 @@ export default function AdminDashboard() {
               upcomingDeadlines.map((deadline) => (
                 <div key={deadline.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700">
                   <div className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${
-                    deadline.priority === 'alta' ? 'bg-red-500' : 
+                    deadline.priority === 'alta' ? 'bg-red-500' :
                     deadline.priority === 'media' ? 'bg-amber-500' : 'bg-emerald-500'
                   }`} />
                   <div className="flex-1 min-w-0">
@@ -288,6 +276,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activity */}
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
+          {/* BUG FIX 4: "Attività" con accento corretto */}
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Attività Recenti AI</h2>
           <div className="space-y-4">
             {recentActivities.length === 0 ? (

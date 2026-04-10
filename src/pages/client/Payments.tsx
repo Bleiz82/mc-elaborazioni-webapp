@@ -10,6 +10,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { getStripe } from '../../services/stripe';
 import StripePaymentForm from '../../components/StripePaymentForm';
 import { generateInvoicePDF } from '../../services/pdfGenerator';
+import { getAdminUID } from '../../services/ai/utils';
 
 interface Invoice {
   id: string;
@@ -30,6 +31,11 @@ export default function ClientPayments() {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'carta' | 'paypal' | 'bonifico' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [stripePromise, setStripePromise] = useState<any>(null);
+
+  useEffect(() => {
+    setStripePromise(getStripe());
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -95,8 +101,9 @@ export default function ClientPayments() {
         });
 
         // Create notification for admin
+        const adminUID = await getAdminUID();
         await addDoc(collection(db, 'notifications'), {
-          user_id: 'admin', // In a real app, this would target admins
+          user_id: adminUID,
           title: 'Nuovo Bonifico Segnalato',
           message: `Il cliente ha segnalato un bonifico per la parcella #${selectedInvoice.invoice_number}`,
           type: 'pagamento',
@@ -273,16 +280,35 @@ export default function ClientPayments() {
             </div>
 
             {showStripeForm ? (
-              <Elements stripe={getStripe()}>
-                <StripePaymentForm 
-                  invoice={selectedInvoice} 
-                  onSuccess={() => {
-                    setSelectedInvoice(null);
-                    setShowStripeForm(false);
-                  }}
-                  onCancel={() => setShowStripeForm(false)}
-                />
-              </Elements>
+              <div className="space-y-4">
+                {(import.meta as any).env.VITE_STRIPE_PUBLISHABLE_KEY ? (
+                  <Elements stripe={stripePromise}>
+                    <StripePaymentForm 
+                      invoice={selectedInvoice} 
+                      onSuccess={() => {
+                        setSelectedInvoice(null);
+                        setShowStripeForm(false);
+                      }}
+                      onCancel={() => setShowStripeForm(false)}
+                    />
+                  </Elements>
+                ) : (
+                  <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-xl text-center">
+                    <p className="text-amber-800 dark:text-amber-400 font-medium">
+                      Pagamento con carta non ancora disponibile.
+                    </p>
+                    <p className="text-amber-700 dark:text-amber-500 text-sm mt-1">
+                      Usa il bonifico bancario per procedere.
+                    </p>
+                    <button 
+                      onClick={() => setShowStripeForm(false)}
+                      className="mt-4 text-sm font-semibold text-amber-900 dark:text-amber-300 underline"
+                    >
+                      Torna indietro
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <div className="space-y-3 mb-6">

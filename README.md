@@ -163,21 +163,35 @@ Il sistema supporta 3 provider AI configurabili da pannello admin senza toccare 
 git clone https://github.com/Bleiz82/mc-elaborazioni-webapp.git
 cd mc-elaborazioni-webapp
 npm install
-Copy
-Variabili d'ambiente
-Crea un file .env.local nella root:
+```
 
-CopyGEMINI_API_KEY=la_tua_chiave_gemini
+### Variabili d'ambiente
+
+Crea un file `.env.local` nella root:
+
+```env
+GEMINI_API_KEY=la_tua_chiave_gemini
 VITE_STRIPE_PUBLISHABLE_KEY=pk_live_...   # opzionale
-Configurazione Firebase
-Il file firebase-applet-config.json nella root contiene la configurazione del progetto Firebase. Le API key aggiuntive (OpenAI, Claude) si configurano direttamente dal pannello Impostazioni nell'area admin, vengono salvate in Firestore su studio_settings/general.
+```
 
-Avvio locale
-Copynpm run dev
+### Configurazione Firebase
+
+Il file `firebase-applet-config.json` nella root contiene la configurazione del progetto Firebase. Le API key aggiuntive (OpenAI, Claude) si configurano direttamente dal pannello **Impostazioni** nell'area admin, vengono salvate in Firestore su `studio_settings/general`.
+
+### Avvio locale
+
+```bash
+npm run dev
 # App disponibile su http://localhost:3000
-Build e deploy
-Copynpm run build
+```
+
+### Build e deploy
+
+```bash
+npm run build
 firebase deploy
+```
+
 🗄️ Struttura Firestore
 Collezione	Descrizione
 users	Profili utenti (admin / collaborator / client)

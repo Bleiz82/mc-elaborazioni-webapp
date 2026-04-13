@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, Send, Bot, User, Clock } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
-import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, getDoc, where } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, getDoc, where, serverTimestamp } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { safeDate } from '../../lib/utils';
@@ -133,7 +133,7 @@ export default function Communications() {
     setNewMessage('');
 
     try {
-      const now = new Date().toISOString();
+      const now = serverTimestamp();
       
       await addDoc(collection(db, 'messages'), {
         conversation_id: activeConvId,

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Clock } from 'lucide-react';
 import { useAuth } from '../../../lib/AuthContext';
 import { db, handleFirestoreError, OperationType } from '../../../lib/firebase';
-import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, getDocs, where, limit } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, getDocs, where, limit, serverTimestamp } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { safeDate } from '../../../lib/utils';
@@ -51,8 +51,8 @@ export default function ClientChatView({ clientId, clientName, clientAvatar }: C
           const newConvRef = await addDoc(collection(db, 'conversations'), {
             client_id: clientId,
             subject: 'Supporto Generale',
-            last_message_at: new Date().toISOString(),
-            created_at: new Date().toISOString()
+            last_message_at: serverTimestamp(),
+            created_at: serverTimestamp()
           });
           currentConvId = newConvRef.id;
         } else {
@@ -105,7 +105,7 @@ export default function ClientChatView({ clientId, clientName, clientAvatar }: C
     setNewMessage('');
 
     try {
-      const now = new Date().toISOString();
+      const now = serverTimestamp();
       
       await addDoc(collection(db, 'messages'), {
         conversation_id: conversationId,

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   TrendingUp, Users, Kanban, CreditCard, 
   Clock, Bot
@@ -8,13 +8,6 @@ import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { startOfMonth, endOfMonth, subMonths, format, parseISO } from 'date-fns';
 
-function safeDate(val: any): Date {
-  if (!val) return new Date(0);
-  if (val.toDate) return val.toDate();
-  if (typeof val === 'string') { try { return parseISO(val); } catch { return new Date(0); } }
-  if (val instanceof Date) return val;
-  try { return new Date(val); } catch { return new Date(0); }
-}
 import { it } from 'date-fns/locale';
 import { safeDate } from '../../lib/utils';
 

@@ -71,7 +71,11 @@ service cloud.firestore {
     match /messages/{messageId} {
       allow read: if isAuthenticated() && (
         isAdmin() || isCollaborator() ||
-        (isClient() && resource.data.client_id == request.auth.uid)
+        (isClient() && (
+          resource.data.client_id == request.auth.uid ||
+          exists(/databases/$(database)/documents/conversations/$(resource.data.conversation_id)) &&
+          get(/databases/$(database)/documents/conversations/$(resource.data.conversation_id)).data.client_id == request.auth.uid
+        ))
       );
       allow create: if isAuthenticated() && (
         isAdmin() || isCollaborator() ||

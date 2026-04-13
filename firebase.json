@@ -1,4 +1,4 @@
-{
+﻿{
   "hosting": {
     "public": "dist",
     "ignore": [
@@ -12,6 +12,10 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "database": "ai-studio-f0b7482f-f418-4061-a54d-ed0b8ffff0cd"
   },
   "functions": [
     {

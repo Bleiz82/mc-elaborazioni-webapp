@@ -126,6 +126,14 @@ const INITIAL_AGENTS: Subagent[] = [
   },
 ];
 
+function safeDate(val: any): Date {
+  if (!val) return new Date();
+  if (typeof val?.toDate === 'function') return val.toDate();
+  if (typeof val === 'string') { const d = new Date(val); return isNaN(d.getTime()) ? new Date() : d; }
+  if (val instanceof Date) return val;
+  return new Date();
+}
+
 export default function AISubagents() {
   const [orchestratorStatus, setOrchestratorStatus] = useState({
     enabled: true,
@@ -320,7 +328,7 @@ const handleRunAgent = async (agentId: string) => {
             <div>
               <p className="text-slate-400 text-sm mb-1">Ultimo Ciclo</p>
               <p className="font-medium">
-                {new Date(orchestratorStatus.lastRun).toLocaleTimeString('it-IT', {
+                {safeDate(orchestratorStatus.lastRun).toLocaleTimeString('it-IT', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })}
@@ -401,7 +409,7 @@ const handleRunAgent = async (agentId: string) => {
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500 dark:text-slate-400">Ultima azione</span>
                   <span className="font-medium text-slate-900 dark:text-slate-100 truncate max-w-[120px]">
-                    {new Date(agent.lastRun).toLocaleTimeString('it-IT', {
+                    {safeDate(agent.lastRun).toLocaleTimeString('it-IT', {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
@@ -483,7 +491,7 @@ const handleRunAgent = async (agentId: string) => {
                     </span>
                     <span className="text-xs text-slate-400 dark:text-slate-500">â€¢</span>
                     <span className="text-xs text-slate-500 dark:text-slate-400">
-                      {new Date(log.created_at).toLocaleString('it-IT')}
+                      {safeDate(log.created_at).toLocaleString('it-IT')}
                     </span>
                   </div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -498,3 +506,6 @@ const handleRunAgent = async (agentId: string) => {
     </div>
   );
 }
+
+
+

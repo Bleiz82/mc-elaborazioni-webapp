@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, Building2, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
@@ -62,6 +62,7 @@ export default function ClientChat() {
         const messagesQuery = query(
           collection(db, 'messages'),
           where('conversation_id', '==', currentConvId),
+          where('client_id', '==', user.uid),
           orderBy('created_at', 'asc')
         );
 

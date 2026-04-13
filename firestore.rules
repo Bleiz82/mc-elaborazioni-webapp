@@ -2,159 +2,175 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // ===============================================================
-    // Helper Functions
-    // ===============================================================
-    
+
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
-    }
-    
+
     function isAdmin() {
       return isAuthenticated() && (
-        getUserData().role == 'admin' || 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
         (request.auth.token.email == "digidentityagency@gmail.com" && request.auth.token.email_verified == true)
       );
     }
-    
+
     function isCollaborator() {
-      return isAuthenticated() && getUserData().role == 'collaborator';
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'collaborator';
     }
-    
+
     function isClient() {
-      return isAuthenticated() && getUserData().role == 'client';
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'client';
     }
-    
+
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // ===============================================================
-    // Rules
-    // ===============================================================
-
+    // ============ USERS ============
     match /users/{userId} {
-      // Users can read their own profile. Admins and collaborators can read all profiles.
       allow read: if isAuthenticated() && (isOwner(userId) || isAdmin() || isCollaborator());
-      // Users can update their own profile, but cannot change their role unless they are admin.
       allow update: if isAuthenticated() && (
-        (isOwner(userId) && request.resource.data.role == resource.data.role) || 
-        isAdmin()
+        (isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin()
       );
-      // Only admins can create or delete users (or users can create their own initial profile with client role)
       allow create: if isAuthenticated() && (
-        isAdmin() || 
-        (isOwner(userId) && request.resource.data.role == 'client')
+        isAdmin() || (isOwner(userId) && request.resource.data.role == 'client')
       );
       allow delete: if isAdmin();
-      
+
       match /notifications/{notificationId} {
         allow read, update: if isOwner(userId) || isAdmin();
         allow create, delete: if isAdmin();
       }
     }
-    
+
+    // ============ SETTINGS ============
     match /settings/studio {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
-    
-    match /clients/{clientId} {
-      // Clients can only read their own client record.
-      // Collaborators and Admins can read all.
+
+    match /studio_settings/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ============ CONVERSATIONS ============
+    match /conversations/{conversationId} {
       allow read: if isAuthenticated() && (
-        isAdmin() || isCollaborator() || 
+        isAdmin() || isCollaborator() ||
+        (isClient() && resource.data.client_id == request.auth.uid)
+      );
+      allow create: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
+        (isClient() && request.resource.data.client_id == request.auth.uid)
+      );
+      allow update, delete: if isAdmin() || isCollaborator();
+    }
+
+    // ============ MESSAGES (flat collection) ============
+    match /messages/{messageId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
+        (isClient() && resource.data.client_id == request.auth.uid)
+      );
+      allow create: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
+        (isClient() && request.resource.data.sender_id == request.auth.uid)
+      );
+      allow update, delete: if isAdmin();
+    }
+
+    // ============ DEADLINES ============
+    match /deadlines/{deadlineId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
+        (isClient() && resource.data.client_id == request.auth.uid)
+      );
+      allow create, update, delete: if isAdmin() || isCollaborator();
+    }
+
+    // ============ DOCUMENTS ============
+    match /documents/{documentId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
+        (isClient() && resource.data.client_id == request.auth.uid)
+      );
+      allow create: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
+        (isClient() && request.resource.data.client_id == request.auth.uid)
+      );
+      allow update, delete: if isAdmin() || isCollaborator();
+    }
+
+    // ============ INVOICES ============
+    match /invoices/{invoiceId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() || (isClient() && resource.data.client_id == request.auth.uid)
+      );
+      allow write: if isAdmin();
+    }
+
+    // ============ PAYMENTS ============
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() || (isClient() && resource.data.client_id == request.auth.uid)
+      );
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // ============ PRACTICES ============
+    match /practices/{practiceId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
+        (isClient() && resource.data.client_id == request.auth.uid)
+      );
+      allow create, update: if isAdmin() || isCollaborator();
+      allow delete: if isAdmin();
+    }
+
+    // ============ CLIENTS ============
+    match /clients/{clientId} {
+      allow read: if isAuthenticated() && (
+        isAdmin() || isCollaborator() ||
         (isClient() && resource.data.profile_id == request.auth.uid)
       );
       allow create, update, delete: if isAdmin() || isCollaborator();
     }
-    
+
+    // ============ COLLABORATORS ============
     match /collaborators/{collaboratorId} {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
-    
-    match /practices/{practiceId} {
+
+    // ============ NOTIFICATIONS ============
+    match /notifications/{notificationId} {
       allow read: if isAuthenticated() && (
-        isAdmin() || isCollaborator() || 
-        (isClient() && get(/databases/$(database)/documents/clients/$(resource.data.client_id)).data.profile_id == request.auth.uid)
-      );
-      allow create, update: if isAdmin() || isCollaborator();
-      allow delete: if isAdmin();
-      
-      match /comments/{commentId} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated() && request.resource.data.author_id == request.auth.uid;
-        allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.author_id == request.auth.uid);
-      }
-    }
-    
-    match /deadlines/{deadlineId} {
-      allow read: if isAuthenticated() && (
-        isAdmin() || isCollaborator() || 
-        (isClient() && get(/databases/$(database)/documents/clients/$(resource.data.client_id)).data.profile_id == request.auth.uid)
-      );
-      allow create, update, delete: if isAdmin() || isCollaborator();
-    }
-    
-    match /documents/{documentId} {
-      allow read: if isAuthenticated() && (
-        isAdmin() || isCollaborator() || 
-        (isClient() && get(/databases/$(database)/documents/clients/$(resource.data.client_id)).data.profile_id == request.auth.uid)
-      );
-      // Clients can upload documents for themselves
-      allow create: if isAuthenticated() && (
-        isAdmin() || isCollaborator() || 
-        (isClient() && get(/databases/$(database)/documents/clients/$(request.resource.data.client_id)).data.profile_id == request.auth.uid && request.resource.data.uploaded_by == request.auth.uid)
-      );
-      allow update, delete: if isAdmin() || isCollaborator();
-    }
-    
-    match /invoices/{invoiceId} {
-      allow read: if isAuthenticated() && (
-        isAdmin() || 
-        (isClient() && get(/databases/$(database)/documents/clients/$(resource.data.client_id)).data.profile_id == request.auth.uid)
-      );
-      allow write: if isAdmin();
-    }
-    
-    match /payments/{paymentId} {
-      allow read: if isAuthenticated() && (
-        isAdmin() || 
-        (isClient() && get(/databases/$(database)/documents/invoices/$(resource.data.invoice_id)).data.client_id != null) // Simplified check
-      );
-      allow create: if isAuthenticated(); // Clients can create payment records
-      allow update, delete: if isAdmin();
-    }
-    
-    match /conversations/{conversationId} {
-      allow read: if isAuthenticated() && (
-        isAdmin() || isCollaborator() || 
-        (isClient() && get(/databases/$(database)/documents/clients/$(resource.data.client_id)).data.profile_id == request.auth.uid)
+        isAdmin() || isCollaborator() ||
+        (isClient() && resource.data.user_id == request.auth.uid)
       );
       allow create: if isAuthenticated();
-      allow update, delete: if isAdmin() || isCollaborator();
-      
-      match /messages/{messageId} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated() && request.resource.data.sender_id == request.auth.uid;
-        allow update, delete: if isAdmin();
-      }
+      allow update: if isAuthenticated() && (
+        isAdmin() || resource.data.user_id == request.auth.uid
+      );
+      allow delete: if isAdmin();
     }
-    
+
+    // ============ AI (admin only) ============
+    match /orchestrator_status/{docId} {
+      allow read, write: if isAdmin();
+    }
+
     match /ai_subagents/{subagentId} {
       allow read: if isAdmin() || isCollaborator();
       allow write: if isAdmin();
     }
-    
+
     match /ai_activity_log/{logId} {
       allow read: if isAdmin() || isCollaborator();
       allow write: if isAdmin();
     }
   }
 }
+

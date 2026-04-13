@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { 
   TrendingUp, Users, Kanban, CreditCard, 
   Clock, Bot
@@ -7,6 +7,14 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { startOfMonth, endOfMonth, subMonths, format, parseISO } from 'date-fns';
+
+function safeDate(val: any): Date {
+  if (!val) return new Date(0);
+  if (val.toDate) return val.toDate();
+  if (typeof val === 'string') { try { return parseISO(val); } catch { return new Date(0); } }
+  if (val instanceof Date) return val;
+  try { return new Date(val); } catch { return new Date(0); }
+}
 import { it } from 'date-fns/locale';
 
 export default function AdminDashboard() {
@@ -80,7 +88,7 @@ export default function AdminDashboard() {
         monthlyRevenueSnap.forEach(doc => {
           const data = doc.data();
           if (data.paid_at) {
-            const paidDate = parseISO(data.paid_at);
+            const paidDate = safeDate(data.paid_at);
             if (paidDate >= sixMonthsAgo) {
               const monthKey = format(paidDate, 'MMM', { locale: it });
               if (chartMap.has(monthKey)) {
@@ -104,10 +112,10 @@ export default function AdminDashboard() {
             deadlinesList.push({ id: doc.id, ...data });
           }
         });
-        deadlinesList.sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
+        deadlinesList.sort((a, b) => safeDate(a.due_date).getTime() - safeDate(b.due_date).getTime());
         setUpcomingDeadlines(deadlinesList.slice(0, 5));
 
-        // 7. Attività Recenti AI
+        // 7. AttivitÃ  Recenti AI
         const activityRef = collection(db, 'ai_activity_log');
         const qActivity = query(activityRef, orderBy('created_at', 'desc'), limit(5));
         const activitySnap = await getDocs(qActivity);
@@ -160,20 +168,20 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h1>
-        {/* BUG FIX 3: "Attività" e "Panoramica" con accenti corretti */}
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Panoramica delle attività dello studio</p>
+        {/* BUG FIX 3: "AttivitÃ " e "Panoramica" con accenti corretti */}
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Panoramica delle attivitÃ  dello studio</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-        {/* BUG FIX 1 & 2: € aggiunto su Fatturato Mensile e Pagamenti in Attesa */}
+        {/* BUG FIX 1 & 2: â‚¬ aggiunto su Fatturato Mensile e Pagamenti in Attesa */}
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fatturato Mensile</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-                € {stats.monthlyRevenue.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                â‚¬ {stats.monthlyRevenue.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
               </p>
             </div>
             <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
@@ -211,7 +219,7 @@ export default function AdminDashboard() {
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Pagamenti in Attesa</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-                € {stats.pendingPayments.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                â‚¬ {stats.pendingPayments.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
               </p>
             </div>
             <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
@@ -234,7 +242,7 @@ export default function AdminDashboard() {
                 <Tooltip
                   cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#1e293b', color: '#f8fafc' }}
-                  formatter={(value: number) => [`€ ${value.toLocaleString('it-IT')}`, 'Entrate']}
+                  formatter={(value: number) => [`â‚¬ ${value.toLocaleString('it-IT')}`, 'Entrate']}
                 />
                 <Bar dataKey="entrate" fill="#0EA5E9" radius={[4, 4, 0, 0]} maxBarSize={40} />
               </BarChart>
@@ -263,7 +271,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="text-right">
                     <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-                      {deadline.due_date ? format(parseISO(deadline.due_date), 'dd MMM', { locale: it }) : ''}
+                      {deadline.due_date ? format(safeDate(deadline.due_date), 'dd MMM', { locale: it }) : ''}
                     </span>
                   </div>
                 </div>
@@ -276,11 +284,11 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activity */}
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-slate-900/50">
-          {/* BUG FIX 4: "Attività" con accento corretto */}
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Attività Recenti AI</h2>
+          {/* BUG FIX 4: "AttivitÃ " con accento corretto */}
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">AttivitÃ  Recenti AI</h2>
           <div className="space-y-4">
             {recentActivities.length === 0 ? (
-              <p className="text-sm text-slate-500 dark:text-slate-400">Nessuna attività recente.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Nessuna attivitÃ  recente.</p>
             ) : (
               recentActivities.map((activity) => (
                 <div key={activity.id} className="flex items-start gap-3">
@@ -290,7 +298,7 @@ export default function AdminDashboard() {
                   <div>
                     <p className="text-sm text-slate-700 dark:text-slate-300">{activity.description}</p>
                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {activity.created_at ? format(parseISO(activity.created_at), 'dd MMM HH:mm', { locale: it }) : ''}
+                      <Clock className="w-3 h-3" /> {activity.created_at ? format(safeDate(activity.created_at), 'dd MMM HH:mm', { locale: it }) : ''}
                     </p>
                   </div>
                 </div>
@@ -331,3 +339,7 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+
+
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/AuthContext';
 import { db } from '../../lib/firebase';
@@ -56,7 +56,7 @@ export default function Onboarding() {
     }
     if (step === 3) {
       if (!formData.taxId || !formData.address || !formData.city) {
-        toast.error('Compila i campi obbligatori (Codice Fiscale, Indirizzo, Città)');
+        toast.error('Compila i campi obbligatori (Codice Fiscale, Indirizzo, CittÃ )');
         return;
       }
     }
@@ -100,7 +100,7 @@ export default function Onboarding() {
       await setDoc(doc(db, 'users', user!.uid), clientData, { merge: true });
 
       // 2. Update Profile Document
-      await updateDoc(doc(db, 'profiles', user!.uid), {
+      await updateDoc(doc(db, 'users', user!.uid), {
         onboarding_completed: true,
         full_name: formData.fullName,
         updated_at: new Date().toISOString()
@@ -113,7 +113,7 @@ export default function Onboarding() {
       navigate('/client/home');
     } catch (error) {
       console.error("Error completing onboarding:", error);
-      toast.error('Si è verificato un errore. Riprova.');
+      toast.error('Si Ã¨ verificato un errore. Riprova.');
       setLoading(false);
     }
   };
@@ -282,7 +282,7 @@ export default function Onboarding() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Città, CAP, Provincia *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">CittÃ , CAP, Provincia *</label>
                 <input 
                   type="text" required
                   value={formData.city}
@@ -339,7 +339,7 @@ export default function Onboarding() {
                 className="mt-1 w-5 h-5 text-sky-600 border-slate-300 dark:border-slate-600 rounded focus:ring-sky-500"
               />
               <span className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Acconsento al trattamento dei dati personali ai sensi del GDPR per le finalità indicate nella <a href="#" className="text-sky-600 dark:text-sky-400 hover:underline">Privacy Policy</a> dello studio.
+                Acconsento al trattamento dei dati personali ai sensi del GDPR per le finalitÃ  indicate nella <a href="#" className="text-sky-600 dark:text-sky-400 hover:underline">Privacy Policy</a> dello studio.
               </span>
             </label>
 

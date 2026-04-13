@@ -1,22 +1,96 @@
+import { useState, useEffect } from 'react';
 import { 
   Upload, CreditCard, CalendarClock, MessageSquare, 
   ChevronRight, FileText, User
 } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { Link } from 'react-router-dom';
-
-const upcomingDeadlines = [
-  { id: 1, title: 'F24 IVA Trimestrale', date: '16 Apr', daysLeft: 8 },
-  { id: 2, title: 'Dichiarazione Redditi', date: '30 Apr', daysLeft: 22 },
-];
-
-const recentMessages = [
-  { id: 1, sender: 'Studio', text: 'Abbiamo elaborato la tua busta paga di Marzo. La trovi nella sezione documenti.', time: 'Ieri' },
-  { id: 2, sender: 'Agente Scadenze', text: 'Promemoria: scadenza F24 in avvicinamento.', time: '2 giorni fa' },
-];
+import { db } from '../../lib/firebase';
+import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { format, parseISO, differenceInDays } from 'date-fns';
+import { it } from 'date-fns/locale';
 
 export default function ClientHome() {
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    deadlines: 0,
+    toPay: 0,
+    messages: 0
+  });
+  const [upcomingDeadlines, setUpcomingDeadlines] = useState<any[]>([]);
+  const [recentMessages, setRecentMessages] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    // Fetch Deadlines
+    const deadlinesQuery = query(
+      collection(db, 'deadlines'),
+      where('client_id', '==', user.uid),
+      where('status', '!=', 'completata'),
+      orderBy('status'),
+      orderBy('due_date', 'asc'),
+      limit(3)
+    );
+
+    const unsubscribeDeadlines = onSnapshot(deadlinesQuery, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        daysLeft: differenceInDays(parseISO(doc.data().due_date), new Date())
+      }));
+      setUpcomingDeadlines(docs);
+      setStats(prev => ({ ...prev, deadlines: snapshot.size }));
+    });
+
+    // Fetch Messages (from all conversations of this client)
+    // Note: In a real app we might want to fetch from a specific conversation or the latest ones
+    const messagesQuery = query(
+      collection(db, 'messages'),
+      where('client_id', '==', user.uid), // Assuming messages have client_id for easy filtering
+      orderBy('created_at', 'desc'),
+      limit(3)
+    );
+
+    // Alternative: if messages don't have client_id, we'd need to fetch conversations first.
+    // But for simplicity and following the rule "Filtra SEMPRE per where('clientId', '==', user.uid)"
+    const unsubscribeMessages = onSnapshot(messagesQuery, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setRecentMessages(docs);
+      setStats(prev => ({ ...prev, messages: snapshot.size }));
+    });
+
+    // Fetch Invoices (to pay)
+    const invoicesQuery = query(
+      collection(db, 'invoices'),
+      where('client_id', '==', user.uid),
+      where('status', 'in', ['da_pagare', 'scaduta'])
+    );
+
+    const unsubscribeInvoices = onSnapshot(invoicesQuery, (snapshot) => {
+      setStats(prev => ({ ...prev, toPay: snapshot.size }));
+    });
+
+    setLoading(false);
+
+    return () => {
+      unsubscribeDeadlines();
+      unsubscribeMessages();
+      unsubscribeInvoices();
+    };
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-lg mx-auto">
@@ -25,15 +99,17 @@ export default function ClientHome() {
         <h2 className="text-slate-300 text-sm font-medium mb-4">La tua situazione</h2>
         <div className="grid grid-cols-3 gap-4 divide-x divide-slate-700">
           <div className="text-center">
-            <p className="text-2xl font-bold text-white">2</p>
+            <p className="text-2xl font-bold text-white">{stats.deadlines}</p>
             <p className="text-xs text-slate-400 mt-1">Scadenze</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-emerald-400">0</p>
+            <p className={`text-2xl font-bold ${stats.toPay > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+              {stats.toPay}
+            </p>
             <p className="text-xs text-slate-400 mt-1">Da pagare</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-white">1</p>
+            <p className="text-2xl font-bold text-white">{stats.messages}</p>
             <p className="text-xs text-slate-400 mt-1">Messaggi</p>
           </div>
         </div>
@@ -79,24 +155,34 @@ export default function ClientHome() {
           </Link>
         </div>
         <div className="space-y-3">
-          {upcomingDeadlines.map(deadline => (
-            <div key={deadline.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
-                  <CalendarClock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{deadline.title}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">{deadline.date}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                  -{deadline.daysLeft} gg
-                </span>
-              </div>
+          {upcomingDeadlines.length === 0 ? (
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-700 text-center">
+              <p className="text-xs text-slate-500">Nessuna scadenza imminente</p>
             </div>
-          ))}
+          ) : (
+            upcomingDeadlines.map(deadline => (
+              <div key={deadline.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                    <CalendarClock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{deadline.title}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {format(parseISO(deadline.due_date), 'dd MMM', { locale: it })}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
+                    deadline.daysLeft <= 3 ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
+                  }`}>
+                    {deadline.daysLeft < 0 ? 'Scaduta' : deadline.daysLeft === 0 ? 'Oggi' : `-${deadline.daysLeft} gg`}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -109,20 +195,30 @@ export default function ClientHome() {
           </Link>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
-          {recentMessages.map(msg => (
-            <div key={msg.id} className="p-4 flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
-                <User className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{msg.sender}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{msg.time}</p>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{msg.text}</p>
-              </div>
+          {recentMessages.length === 0 ? (
+            <div className="p-8 text-center">
+              <p className="text-xs text-slate-500">Nessun messaggio recente</p>
             </div>
-          ))}
+          ) : (
+            recentMessages.map(msg => (
+              <div key={msg.id} className="p-4 flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+                  <User className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+                      {msg.sender_id === user?.uid ? 'Tu' : 'Studio'}
+                    </p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                      {format(parseISO(msg.created_at), 'HH:mm')}
+                    </p>
+                  </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{msg.content}</p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

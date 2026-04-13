@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { CreditCard, Download, FileText, X, Copy, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
-import { collection, query, where, onSnapshot, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -42,7 +42,8 @@ export default function ClientPayments() {
 
     const q = query(
       collection(db, 'invoices'),
-      where('client_id', '==', user.uid)
+      where('client_id', '==', user.uid),
+      orderBy('due_date', 'desc')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -50,8 +51,6 @@ export default function ClientPayments() {
       snapshot.forEach((doc) => {
         invoicesData.push({ id: doc.id, ...doc.data() } as Invoice);
       });
-      // Sort by due date descending
-      invoicesData.sort((a, b) => new Date(b.due_date).getTime() - new Date(a.due_date).getTime());
       setInvoices(invoicesData);
       setLoading(false);
     }, (error) => {

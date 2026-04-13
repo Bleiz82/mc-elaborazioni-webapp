@@ -9,6 +9,7 @@ import { useAuth } from '../lib/AuthContext';
 import { logOut } from '../lib/firebase';
 import { cn } from '../lib/utils';
 import { initAIEventListeners, cleanupAIEventListeners } from '../services/ai/eventListeners';
+import { startOrchestrator, stopOrchestrator } from '../services/ai/orchestrator';
 
 const navigation = [
   { name: 'Home', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -35,10 +36,11 @@ export default function AdminLayout() {
   useEffect(() => {
     if (profile?.role === 'admin') {
       initAIEventListeners(true);
-      // Start orchestrator with 10 min interval
+      startOrchestrator(10); // Start orchestrator with 10 min interval
     }
     return () => {
       cleanupAIEventListeners();
+      stopOrchestrator();
     };
   }, [profile]);
 

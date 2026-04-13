@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, Building2 } from 'lucide-react';
+import { Send, Bot, Building2, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
-import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, getDocs, limit } from 'firebase/firestore';
+import { 
+  collection, query, where, orderBy, onSnapshot, addDoc, 
+  updateDoc, doc, getDocs, limit, serverTimestamp 
+} from 'firebase/firestore';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
 
@@ -10,10 +13,11 @@ interface Message {
   id: string;
   conversation_id: string;
   sender_id: string;
+  client_id: string;
   content: string;
   is_read: boolean;
   is_automated: boolean;
-  created_at: string;
+  created_at: any;
 }
 
 export default function ClientChat() {
@@ -44,8 +48,8 @@ export default function ClientChat() {
           const newConvRef = await addDoc(collection(db, 'conversations'), {
             client_id: user.uid,
             subject: 'Supporto Generale',
-            last_message_at: new Date().toISOString(),
-            created_at: new Date().toISOString()
+            last_message_at: serverTimestamp(),
+            created_at: serverTimestamp()
           });
           currentConvId = newConvRef.id;
         } else {
@@ -98,25 +102,30 @@ export default function ClientChat() {
     setNewMessage('');
 
     try {
-      const now = new Date().toISOString();
-      
       await addDoc(collection(db, 'messages'), {
         conversation_id: conversationId,
         sender_id: user.uid,
+        client_id: user.uid, // Added for easier filtering in Home
         content: messageText,
         is_read: false,
         is_automated: false,
-        created_at: now
+        created_at: serverTimestamp()
       });
 
       await updateDoc(doc(db, 'conversations', conversationId), {
-        last_message_at: now
+        last_message_at: serverTimestamp()
       });
       
       scrollToBottom();
     } catch (error) {
       console.error("Error sending message:", error);
     }
+  };
+
+  const formatTime = (timestamp: any) => {
+    if (!timestamp) return '';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return format(date, 'HH:mm');
   };
 
   return (
@@ -174,7 +183,7 @@ export default function ClientChat() {
                     <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                   </div>
                   <p className={`text-[10px] text-slate-400 dark:text-slate-500 mt-1 ${isMe ? 'text-right mr-1' : 'ml-1'}`}>
-                    {format(new Date(msg.created_at), 'HH:mm')}
+                    {formatTime(msg.created_at)}
                   </p>
                 </div>
               </div>
@@ -206,6 +215,3 @@ export default function ClientChat() {
     </div>
   );
 }
-
-// Need to import MessageSquare for the empty state
-import { MessageSquare } from 'lucide-react';

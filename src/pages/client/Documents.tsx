@@ -143,7 +143,7 @@ export default function ClientDocuments() {
     e.target.value = '';
   };
 
-  const handleDelete = async (docId: string, fileUrl: string) => {
+  const handleDelete = async (docId: string, fileUrl: string, storagePath?: string) => {
     if (!window.confirm('Sei sicuro di voler eliminare questo documento?')) return;
     
     try {
@@ -151,7 +151,7 @@ export default function ClientDocuments() {
       await deleteDoc(doc(db, 'documents', docId));
       
       // Delete from Storage
-      const fileRef = ref(storage, fileUrl);
+      const fileRef = ref(storage, storagePath || fileUrl);
       await deleteObject(fileRef);
       
       toast.success('Documento eliminato');
@@ -319,7 +319,7 @@ export default function ClientDocuments() {
                           <Download className="w-4 h-4" /> Scarica
                         </a>
                         <button 
-                          onClick={() => handleDelete(doc.id, doc.url)}
+                          onClick={() => handleDelete(doc.id, doc.url, doc.storage_path)}
                           className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 text-left"
                         >
                           <Trash2 className="w-4 h-4" /> Elimina

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/AuthContext';
 import { db } from '../../lib/firebase';
-import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { User, CreditCard, Bell, Shield, LogOut, ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -31,37 +31,34 @@ export default function ClientProfile() {
   });
 
   useEffect(() => {
-    const fetchProfileData = async () => {
-      if (!user) return;
-      
-      try {
-        // Fetch from clients collection as well to get business data
-        const clientDoc = await getDoc(doc(db, 'users', user.uid));
-        const clientData = clientDoc.exists() ? clientDoc.data() : {};
-
+    if (!user) return;
+    
+    const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
         setFormData({
-          fullName: profile?.full_name || clientData.displayName || '',
-          phone: clientData.phone || '',
-          address: clientData.address || '',
-          city: clientData.city || '',
-          taxId: clientData.taxId || '',
-          vatNumber: clientData.vatNumber || '',
-          pec: clientData.pec || '',
-          sdiCode: clientData.sdiCode || ''
+          fullName: data.displayName || data.full_name || '',
+          phone: data.phone || '',
+          address: data.address || '',
+          city: data.city || '',
+          taxId: data.taxId || data.codice_fiscale || '',
+          vatNumber: data.vatNumber || data.p_iva || '',
+          pec: data.pec || '',
+          sdiCode: data.sdiCode || data.sdi_code || ''
         });
 
-        if (clientData.notification_preferences) {
-          setNotifications(clientData.notification_preferences);
+        if (data.notification_preferences) {
+          setNotifications(data.notification_preferences);
         }
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-      } finally {
-        setLoading(false);
       }
-    };
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching profile:", error);
+      setLoading(false);
+    });
 
-    fetchProfileData();
-  }, [user, profile]);
+    return () => unsubscribe();
+  }, [user]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();

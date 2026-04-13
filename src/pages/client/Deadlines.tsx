@@ -50,7 +50,13 @@ export default function ClientDeadlines() {
     return () => unsubscribe();
   }, [user]);
 
-  const monthDeadlines = deadlines.filter(d => isSameMonth(parseISO(d.due_date), selectedMonth));
+  const monthDeadlines = deadlines.filter(d => {
+    try {
+      return isSameMonth(parseISO(d.due_date), selectedMonth);
+    } catch (e) {
+      return false;
+    }
+  });
 
   const getTypeIcon = (type: string) => {
     switch (type) {

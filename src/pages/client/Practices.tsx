@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../lib/AuthContext';
 import { Kanban, Clock, CheckCircle2, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -13,28 +13,27 @@ export default function ClientPractices() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPractices = async () => {
-      if (!user) return;
-      try {
-        const q = query(
-          collection(db, 'practices'),
-          where('client_id', '==', user.uid),
-          orderBy('created_at', 'desc')
-        );
-        const snap = await getDocs(q);
-        const data: any[] = [];
-        snap.forEach(doc => {
-          data.push({ id: doc.id, ...doc.data() });
-        });
-        setPractices(data);
-      } catch (error) {
-        console.error("Error fetching practices:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!user) return;
 
-    fetchPractices();
+    const q = query(
+      collection(db, 'practices'),
+      where('client_id', '==', user.uid),
+      orderBy('created_at', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: any[] = [];
+      snapshot.forEach(doc => {
+        data.push({ id: doc.id, ...doc.data() });
+      });
+      setPractices(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching practices:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, [user]);
 
   const getStatusColor = (status: string) => {

@@ -105,8 +105,6 @@ export default function ClientChatView({ clientId, clientName, clientAvatar }: C
     setNewMessage('');
 
     try {
-      const now = serverTimestamp();
-      
       await addDoc(collection(db, 'messages'), {
         conversation_id: conversationId,
         sender_id: user.uid,
@@ -114,11 +112,11 @@ export default function ClientChatView({ clientId, clientName, clientAvatar }: C
         content: messageText,
         is_read: false,
         is_automated: isAutomated,
-        created_at: now
+        created_at: serverTimestamp()
       });
 
       await updateDoc(doc(db, 'conversations', conversationId), {
-        last_message_at: now
+        last_message_at: serverTimestamp()
       });
       
       if (isAutomated) {

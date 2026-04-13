@@ -133,8 +133,6 @@ export default function Communications() {
     setNewMessage('');
 
     try {
-      const now = serverTimestamp();
-      
       await addDoc(collection(db, 'messages'), {
         conversation_id: activeConvId,
         sender_id: user.uid,
@@ -142,11 +140,11 @@ export default function Communications() {
         content: messageText,
         is_read: false,
         is_automated: isAutomated,
-        created_at: now
+        created_at: serverTimestamp()
       });
 
       await updateDoc(doc(db, 'conversations', activeConvId), {
-        last_message_at: now
+        last_message_at: serverTimestamp()
       });
       
       if (isAutomated) {

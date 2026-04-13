@@ -3,8 +3,10 @@ import { collection, query, where, getDocs, orderBy, onSnapshot } from 'firebase
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../lib/AuthContext';
 import { Kanban, Clock, CheckCircle2, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
+
 
 export default function ClientPractices() {
   const { user } = useAuth();
@@ -150,7 +152,7 @@ export default function ClientPractices() {
                     <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                       <span className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
-                        {practice.created_at ? format(parseISO(practice.created_at), 'dd MMM yyyy', { locale: it }) : 'N/A'}
+                        {practice.created_at ? format(safeDate(practice.created_at), 'dd MMM yyyy', { locale: it }) : 'N/A'}
                       </span>
                       {practice.type && (
                         <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-xs font-medium">

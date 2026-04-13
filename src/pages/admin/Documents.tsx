@@ -8,7 +8,9 @@ import { collection, query, onSnapshot, orderBy, doc, deleteDoc, updateDoc, getD
 import { ref, deleteObject, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
 import { toast } from 'sonner';
+
 import clsx from 'clsx';
 import { useAuth } from '../../lib/AuthContext';
 
@@ -463,7 +465,7 @@ export default function AdminDocuments() {
                         </select>
                       </td>
                       <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
-                        {format(new Date(doc.created_at), 'dd MMM yyyy', { locale: it })}
+                        {format(safeDate(doc.created_at), 'dd MMM yyyy', { locale: it })}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
@@ -545,7 +547,7 @@ export default function AdminDocuments() {
                   )}>
                     {doc.status.replace('_', ' ')}
                   </span>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500">{format(new Date(doc.created_at), 'dd/MM/yy')}</span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500">{format(safeDate(doc.created_at), 'dd/MM/yy')}</span>
                 </div>
               </div>
             </div>

@@ -6,6 +6,8 @@ import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, orderBy }
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
+
 import { Elements } from '@stripe/react-stripe-js';
 import { getStripe } from '../../services/stripe';
 import StripePaymentForm from '../../components/StripePaymentForm';
@@ -211,7 +213,7 @@ export default function ClientPayments() {
                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{invoice.description}</p>
                 <div className="flex justify-between items-end mb-4">
                   <span className="text-xs text-slate-500 dark:text-slate-400">
-                    Scadenza: {format(new Date(invoice.due_date), 'dd MMM yyyy', { locale: it })}
+                    Scadenza: {format(safeDate(invoice.due_date), 'dd MMM yyyy', { locale: it })}
                   </span>
                   <span className="text-lg font-bold text-slate-900 dark:text-slate-100">
                     € {invoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}

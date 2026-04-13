@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Bot,
   Activity,
@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
+import { safeDate } from '../../lib/utils';
+
 import {
   collection,
   query,
@@ -333,6 +335,7 @@ const handleRunAgent = async (agentId: string) => {
                   minute: '2-digit',
                 })}
               </p>
+
             </div>
             <div>
               <p className="text-slate-400 text-sm mb-1">Prossimo Ciclo</p>
@@ -414,6 +417,7 @@ const handleRunAgent = async (agentId: string) => {
                       minute: '2-digit',
                     })}
                   </span>
+
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500 dark:text-slate-400">Azioni oggi</span>
@@ -493,6 +497,7 @@ const handleRunAgent = async (agentId: string) => {
                     <span className="text-xs text-slate-500 dark:text-slate-400">
                       {safeDate(log.created_at).toLocaleString('it-IT')}
                     </span>
+
                   </div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
                     {log.description}

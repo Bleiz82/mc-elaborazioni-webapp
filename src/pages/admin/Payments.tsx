@@ -6,8 +6,10 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
 import { collection, query, onSnapshot, orderBy, doc, deleteDoc, updateDoc, getDocs, addDoc, where } from 'firebase/firestore';
-import { format, parseISO, startOfMonth, endOfMonth, subMonths, isSameMonth, isBefore, startOfDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, subMonths, isSameMonth, isBefore, startOfDay } from 'date-fns';
+import { safeDate } from '../../lib/utils';
 import { it } from 'date-fns/locale';
+
 import { toast } from 'sonner';
 import clsx from 'clsx';
 import { generateInvoicePDF, generateCSV } from '../../services/pdfGenerator';
@@ -80,7 +82,7 @@ export default function AdminPayments() {
         let status = data.status;
 
         // Auto-update to scaduta
-        const dueDate = startOfDay(parseISO(data.due_date));
+        const dueDate = startOfDay(safeDate(data.due_date));
         if (isBefore(dueDate, today) && status !== 'pagata' && status !== 'scaduta') {
           status = 'scaduta';
           updateDoc(doc(db, 'invoices', docSnap.id), { status: 'scaduta' }).catch(console.error);
@@ -247,11 +249,11 @@ export default function AdminPayments() {
   const lastMonth = subMonths(currentMonth, 1);
 
   const totalRevenue = invoices.filter(i => i.status === 'pagata').reduce((acc, curr) => acc + curr.total_amount, 0);
-  const totalRevenueLastMonth = invoices.filter(i => i.status === 'pagata' && i.paid_at && isSameMonth(parseISO(i.paid_at), lastMonth)).reduce((acc, curr) => acc + curr.total_amount, 0);
+  const totalRevenueLastMonth = invoices.filter(i => i.status === 'pagata' && i.paid_at && isSameMonth(safeDate(i.paid_at), lastMonth)).reduce((acc, curr) => acc + curr.total_amount, 0);
   const revenueGrowth = totalRevenueLastMonth === 0 ? 100 : ((totalRevenue - totalRevenueLastMonth) / totalRevenueLastMonth) * 100;
 
   const toCollect = invoices.filter(i => i.status === 'da_pagare' || i.status === 'scaduta').reduce((acc, curr) => acc + curr.total_amount, 0);
-  const collectedThisMonth = invoices.filter(i => i.status === 'pagata' && i.paid_at && isSameMonth(parseISO(i.paid_at), currentMonth)).reduce((acc, curr) => acc + curr.total_amount, 0);
+  const collectedThisMonth = invoices.filter(i => i.status === 'pagata' && i.paid_at && isSameMonth(safeDate(i.paid_at), currentMonth)).reduce((acc, curr) => acc + curr.total_amount, 0);
   const overdueCount = invoices.filter(i => i.status === 'scaduta').length;
 
   // Chart Data (Last 6 months)
@@ -259,7 +261,7 @@ export default function AdminPayments() {
     const d = subMonths(currentMonth, 5 - i);
     const monthName = format(d, 'MMM', { locale: it });
     const amount = invoices
-      .filter(inv => inv.status === 'pagata' && inv.paid_at && isSameMonth(parseISO(inv.paid_at), d))
+      .filter(inv => inv.status === 'pagata' && inv.paid_at && isSameMonth(safeDate(inv.paid_at), d))
       .reduce((acc, curr) => acc + curr.total_amount, 0);
     return { name: monthName, incassi: amount };
   });
@@ -446,7 +448,7 @@ export default function AdminPayments() {
                     <td className="px-6 py-4 text-slate-600">{invoice.client_name}</td>
                     <td className="px-6 py-4 text-slate-600 max-w-[200px] truncate" title={invoice.description}>{invoice.description}</td>
                     <td className="px-6 py-4 font-bold text-slate-900">€ {invoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</td>
-                    <td className="px-6 py-4 text-slate-600">{format(parseISO(invoice.due_date), 'dd MMM yyyy', { locale: it })}</td>
+                    <td className="px-6 py-4 text-slate-600">{format(safeDate(invoice.due_date), 'dd MMM yyyy', { locale: it })}</td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <span className={clsx("inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize w-fit", getStatusColor(invoice.status))}>

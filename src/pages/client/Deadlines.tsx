@@ -5,6 +5,8 @@ import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestor
 import { DayPicker } from 'react-day-picker';
 import { format, isSameDay, isBefore, startOfDay, differenceInDays, parseISO, isSameMonth } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
+
 import { 
   CalendarClock, AlertCircle, CheckCircle2, FileText, Building, Shield, CreditCard, ChevronRight
 } from 'lucide-react';
@@ -52,7 +54,7 @@ export default function ClientDeadlines() {
 
   const monthDeadlines = deadlines.filter(d => {
     try {
-      return isSameMonth(parseISO(d.due_date), selectedMonth);
+      return isSameMonth(safeDate(d.due_date), selectedMonth);
     } catch (e) {
       return false;
     }
@@ -72,7 +74,7 @@ export default function ClientDeadlines() {
   const getCountdownInfo = (dueDateStr: string, status: string) => {
     if (status === 'completata') return { text: 'Completata', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30' };
     
-    const dueDate = startOfDay(parseISO(dueDateStr));
+    const dueDate = startOfDay(safeDate(dueDateStr));
     const today = startOfDay(new Date());
     const days = differenceInDays(dueDate, today);
     
@@ -92,7 +94,7 @@ export default function ClientDeadlines() {
           month={selectedMonth}
           onMonthChange={setSelectedMonth}
           modifiers={{
-            hasDeadline: (date) => deadlines.some(d => isSameDay(parseISO(d.due_date), date))
+            hasDeadline: (date) => deadlines.some(d => isSameDay(safeDate(d.due_date), date))
           }}
           modifiersStyles={{
             hasDeadline: { fontWeight: 'bold', color: '#0EA5E9' }
@@ -100,7 +102,7 @@ export default function ClientDeadlines() {
           components={{
             Day: (props) => {
               const date = props.date;
-              const dayDeads = deadlines.filter(d => isSameDay(parseISO(d.due_date), date));
+              const dayDeads = deadlines.filter(d => isSameDay(safeDate(d.due_date), date));
               
               return (
                 <div className="relative w-full h-full flex items-center justify-center">
@@ -160,7 +162,7 @@ export default function ClientDeadlines() {
                           </span>
                         )}
                         <span className="text-xs text-slate-500 dark:text-slate-400 ml-auto">
-                          {format(parseISO(deadline.due_date), 'dd MMM yyyy', { locale: it })}
+                          {format(safeDate(deadline.due_date), 'dd MMM yyyy', { locale: it })}
                         </span>
                       </div>
                     </div>

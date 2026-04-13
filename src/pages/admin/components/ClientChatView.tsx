@@ -5,12 +5,15 @@ import { db, handleFirestoreError, OperationType } from '../../../lib/firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, getDocs, where, limit } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../../lib/utils';
 import { toast } from 'sonner';
+
 
 interface Message {
   id: string;
   conversation_id: string;
   sender_id: string;
+  client_id: string;
   content: string;
   is_read: boolean;
   is_automated: boolean;
@@ -107,6 +110,7 @@ export default function ClientChatView({ clientId, clientName, clientAvatar }: C
       await addDoc(collection(db, 'messages'), {
         conversation_id: conversationId,
         sender_id: user.uid,
+        client_id: clientId,
         content: messageText,
         is_read: false,
         is_automated: isAutomated,
@@ -183,7 +187,7 @@ export default function ClientChatView({ clientId, clientName, clientAvatar }: C
                     <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                   </div>
                   <p className={`text-[10px] text-slate-400 mt-1.5 ${isAdmin ? 'text-right mr-1' : 'ml-1'}`}>
-                    {format(new Date(msg.created_at), 'dd MMM HH:mm', { locale: it })}
+                    {format(safeDate(msg.created_at), 'dd MMM HH:mm', { locale: it })}
                   </p>
                 </div>
               </div>

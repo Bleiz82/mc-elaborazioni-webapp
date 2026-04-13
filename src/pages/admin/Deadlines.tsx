@@ -4,9 +4,11 @@ import {
   MoreVertical, Clock, AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
-import { format, isSameDay, isBefore, startOfDay, differenceInDays, parseISO } from 'date-fns';
+import { format, isSameDay, isBefore, startOfDay, differenceInDays } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
 import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
+
 import { collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs, orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
 import clsx from 'clsx';
@@ -92,7 +94,7 @@ export default function AdminDeadlines() {
         let status = data.status;
         
         // Auto-update status to 'scaduta' if overdue and not completed
-        const dueDate = startOfDay(parseISO(data.due_date));
+        const dueDate = startOfDay(safeDate(data.due_date));
         if (isBefore(dueDate, today) && status !== 'completata' && status !== 'scaduta') {
           status = 'scaduta';
           // Update in firestore asynchronously
@@ -172,7 +174,7 @@ export default function AdminDeadlines() {
   };
 
   const handleDayClick = (day: Date) => {
-    const dayDeads = deadlines.filter(d => isSameDay(parseISO(d.due_date), day));
+    const dayDeads = deadlines.filter(d => isSameDay(safeDate(d.due_date), day));
     if (dayDeads.length > 0) {
       setDayDeadlines(dayDeads);
       setSelectedDate(day);
@@ -209,7 +211,7 @@ export default function AdminDeadlines() {
 
   const getCountdownText = (dueDateStr: string, status: string) => {
     if (status === 'completata') return 'Completata';
-    const dueDate = startOfDay(parseISO(dueDateStr));
+    const dueDate = startOfDay(safeDate(dueDateStr));
     const today = startOfDay(new Date());
     const days = differenceInDays(dueDate, today);
     
@@ -221,7 +223,7 @@ export default function AdminDeadlines() {
 
   const getCountdownColor = (dueDateStr: string, status: string) => {
     if (status === 'completata') return 'text-emerald-600';
-    const dueDate = startOfDay(parseISO(dueDateStr));
+    const dueDate = startOfDay(safeDate(dueDateStr));
     const today = startOfDay(new Date());
     const days = differenceInDays(dueDate, today);
     
@@ -368,7 +370,7 @@ export default function AdminDeadlines() {
                           {deadline.client_name}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-slate-900 dark:text-slate-100 font-medium">{format(parseISO(deadline.due_date), 'dd MMM yyyy', { locale: it })}</div>
+                          <div className="text-slate-900 dark:text-slate-100 font-medium">{format(safeDate(deadline.due_date), 'dd MMM yyyy', { locale: it })}</div>
                           <div className={clsx("text-xs mt-0.5", getCountdownColor(deadline.due_date, deadline.status))}>
                             {getCountdownText(deadline.due_date, deadline.status)}
                           </div>
@@ -413,7 +415,7 @@ export default function AdminDeadlines() {
             mode="single"
             locale={it}
             modifiers={{
-              hasDeadline: (date) => deadlines.some(d => isSameDay(parseISO(d.due_date), date))
+              hasDeadline: (date) => deadlines.some(d => isSameDay(safeDate(d.due_date), date))
             }}
             modifiersStyles={{
               hasDeadline: { fontWeight: 'bold', textDecoration: 'underline' }
@@ -423,7 +425,7 @@ export default function AdminDeadlines() {
             components={{
               Day: (props) => {
                 const date = props.date;
-                const dayDeads = deadlines.filter(d => isSameDay(parseISO(d.due_date), date));
+                const dayDeads = deadlines.filter(d => isSameDay(safeDate(d.due_date), date));
                 
                 return (
                   <div className="relative w-full h-full flex items-center justify-center">
@@ -434,7 +436,7 @@ export default function AdminDeadlines() {
                           let color = 'bg-sky-500';
                           if (d.status === 'completata') color = 'bg-emerald-500';
                           else if (d.status === 'scaduta' || d.priority === 'urgente') color = 'bg-red-500';
-                          else if (differenceInDays(parseISO(d.due_date), new Date()) <= 7) color = 'bg-amber-500';
+                          else if (differenceInDays(safeDate(d.due_date), new Date()) <= 7) color = 'bg-amber-500';
                           
                           return <div key={i} className={clsx("w-1.5 h-1.5 rounded-full", color)} />
                         })}

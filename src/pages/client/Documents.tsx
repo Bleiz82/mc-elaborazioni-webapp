@@ -8,6 +8,8 @@ import imageCompression from 'browser-image-compression';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
+
 
 interface DocumentData {
   id: string;
@@ -284,7 +286,7 @@ export default function ClientDocuments() {
                   <div className="flex-1 min-w-0 pr-8">
                     <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate" title={doc.name}>{doc.name}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      {format(new Date(doc.created_at), 'dd MMM yyyy', { locale: it })}
+                      {format(safeDate(doc.created_at), 'dd MMM yyyy', { locale: it })}
                     </p>
                     <div className="mt-2">
                       {getStatusBadge(doc.status)}

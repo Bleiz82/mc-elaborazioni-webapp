@@ -9,6 +9,8 @@ import { db } from '../../lib/firebase';
 import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 import { format, parseISO, differenceInDays } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
+
 
 export default function ClientHome() {
   const { user, profile } = useAuth();
@@ -38,7 +40,7 @@ export default function ClientHome() {
       const docs = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        daysLeft: differenceInDays(parseISO(doc.data().due_date), new Date())
+        daysLeft: differenceInDays(safeDate(doc.data().due_date), new Date())
       }));
       setUpcomingDeadlines(docs);
       setStats(prev => ({ ...prev, deadlines: snapshot.size }));
@@ -169,7 +171,7 @@ export default function ClientHome() {
                   <div>
                     <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{deadline.title}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {format(parseISO(deadline.due_date), 'dd MMM', { locale: it })}
+                      {format(safeDate(deadline.due_date), 'dd MMM', { locale: it })}
                     </p>
                   </div>
                 </div>
@@ -211,7 +213,7 @@ export default function ClientHome() {
                       {msg.sender_id === user?.uid ? 'Tu' : 'Studio'}
                     </p>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">
-                      {format(parseISO(msg.created_at), 'HH:mm')}
+                      {format(safeDate(msg.created_at), 'HH:mm')}
                     </p>
                   </div>
                   <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{msg.content}</p>

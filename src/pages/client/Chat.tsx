@@ -6,6 +6,8 @@ import {
   collection, query, where, orderBy, onSnapshot, addDoc, 
   updateDoc, doc, getDocs, limit, serverTimestamp 
 } from 'firebase/firestore';
+import { safeDate } from '../../lib/utils';
+
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
 
@@ -66,6 +68,7 @@ export default function ClientChat() {
           orderBy('created_at', 'asc')
         );
 
+
         const unsubscribe = onSnapshot(messagesQuery, (msgSnapshot) => {
           const msgs: Message[] = [];
           msgSnapshot.forEach((doc) => {
@@ -124,10 +127,9 @@ export default function ClientChat() {
   };
 
   const formatTime = (timestamp: any) => {
-    if (!timestamp) return '';
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    return format(date, 'HH:mm');
+    return format(safeDate(timestamp), 'HH:mm');
   };
+
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] bg-slate-50 dark:bg-slate-900 -mx-4 -mt-4">

@@ -16,6 +16,8 @@ function safeDate(val: any): Date {
   try { return new Date(val); } catch { return new Date(0); }
 }
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
+
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);

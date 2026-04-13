@@ -10,6 +10,8 @@ import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
 import { doc, getDoc, collection, query, where, onSnapshot, updateDoc, orderBy } from 'firebase/firestore';
 import { format, differenceInDays } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
+
 import { toast } from 'sonner';
 
 // Reusing the chat component logic for the Communications tab
@@ -287,7 +289,7 @@ export default function ClientDetails() {
                         <div key={d.id} className="flex justify-between items-center text-sm">
                           <span className="text-slate-700 dark:text-slate-300 truncate pr-2">{d.title}</span>
                           <span className="text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
-                            {format(new Date(d.due_date), 'dd/MM/yy')}
+                            {format(safeDate(d.due_date), 'dd/MM/yy')}
                           </span>
                         </div>
                       ))}
@@ -342,7 +344,7 @@ export default function ClientDetails() {
                       {documents.map(doc => (
                         <tr key={doc.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                           <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{doc.fileName}</td>
-                          <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{format(new Date(doc.createdAt), 'dd MMM yyyy', { locale: it })}</td>
+                          <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{format(safeDate(doc.createdAt), 'dd MMM yyyy', { locale: it })}</td>
                           <td className="px-6 py-4">
                             <select 
                               value={doc.status}
@@ -424,7 +426,7 @@ export default function ClientDetails() {
                      </thead>
                      <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                        {deadlines.map(deadline => {
-                         const daysLeft = differenceInDays(new Date(deadline.due_date), new Date());
+                         const daysLeft = differenceInDays(safeDate(deadline.due_date), new Date());
                          const isUrgent = daysLeft >= 0 && daysLeft <= 7;
                          const isOverdue = daysLeft < 0;
                          
@@ -435,7 +437,7 @@ export default function ClientDetails() {
                                {isUrgent && <span className="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 uppercase">Urgente</span>}
                                {isOverdue && <span className="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 uppercase">Scaduta</span>}
                              </td>
-                             <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{format(new Date(deadline.due_date), 'dd MMM yyyy', { locale: it })}</td>
+                             <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{format(safeDate(deadline.due_date), 'dd MMM yyyy', { locale: it })}</td>
                              <td className="px-6 py-4">
                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                                  deadline.status === 'completata' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
@@ -498,7 +500,7 @@ export default function ClientDetails() {
                          <tr key={invoice.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                            <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">#{invoice.invoice_number}</td>
                            <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{invoice.description}</td>
-                           <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{format(new Date(invoice.due_date), 'dd MMM yyyy', { locale: it })}</td>
+                           <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{format(safeDate(invoice.due_date), 'dd MMM yyyy', { locale: it })}</td>
                            <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">€ {invoice.total_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</td>
                            <td className="px-6 py-4">
                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
@@ -545,7 +547,7 @@ export default function ClientDetails() {
                          }`}>
                            {practice.status.replace('_', ' ')}
                          </span>
-                         <span className="text-xs text-slate-400 dark:text-slate-500">{format(new Date(practice.created_at), 'dd/MM/yyyy')}</span>
+                         <span className="text-xs text-slate-400 dark:text-slate-500">{format(safeDate(practice.created_at), 'dd/MM/yyyy')}</span>
                        </div>
                        <h4 className="font-bold text-slate-900 dark:text-slate-100 mb-1">{practice.title}</h4>
                        <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{practice.description}</p>
@@ -569,7 +571,7 @@ export default function ClientDetails() {
                     <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">{log.agent}</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">{format(new Date(log.timestamp), 'dd MMM HH:mm', { locale: it })}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">{format(safeDate(log.timestamp), 'dd MMM HH:mm', { locale: it })}</span>
                       </div>
                       <p className="text-sm text-slate-600 dark:text-slate-300">{log.action}</p>
                     </div>

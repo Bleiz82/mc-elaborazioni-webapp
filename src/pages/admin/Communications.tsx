@@ -5,7 +5,9 @@ import { db, handleFirestoreError, OperationType } from '../../lib/firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, getDoc, where } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { safeDate } from '../../lib/utils';
 import { toast } from 'sonner';
+
 
 interface Conversation {
   id: string;
@@ -21,6 +23,7 @@ interface Message {
   id: string;
   conversation_id: string;
   sender_id: string;
+  client_id: string;
   content: string;
   is_read: boolean;
   is_automated: boolean;
@@ -135,6 +138,7 @@ export default function Communications() {
       await addDoc(collection(db, 'messages'), {
         conversation_id: activeConvId,
         sender_id: user.uid,
+        client_id: activeConv.client_id,
         content: messageText,
         is_read: false,
         is_automated: isAutomated,
@@ -217,7 +221,7 @@ export default function Communications() {
                     <div className="flex justify-between items-baseline mb-1">
                       <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate pr-2">{conv.client_name}</p>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 flex-shrink-0">
-                        {format(new Date(conv.last_message_at), 'dd/MM')}
+                        {format(safeDate(conv.last_message_at), 'dd/MM')}
                       </p>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{conv.subject}</p>
@@ -252,7 +256,7 @@ export default function Communications() {
                   <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">{activeConv?.client_name}</h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    Ultimo msg: {activeConv ? format(new Date(activeConv.last_message_at), 'dd MMM HH:mm', { locale: it }) : ''}
+                    Ultimo msg: {activeConv ? format(safeDate(activeConv.last_message_at), 'dd MMM HH:mm', { locale: it }) : ''}
                   </p>
                 </div>
               </div>
@@ -295,7 +299,7 @@ export default function Communications() {
                           <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                         </div>
                         <p className={`text-[10px] text-slate-400 dark:text-slate-500 mt-1.5 ${isAdmin ? 'text-right mr-1' : 'ml-1'}`}>
-                          {format(new Date(msg.created_at), 'dd MMM HH:mm', { locale: it })}
+                          {format(safeDate(msg.created_at), 'dd MMM HH:mm', { locale: it })}
                         </p>
                       </div>
                     </div>

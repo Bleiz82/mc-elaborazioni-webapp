@@ -23,7 +23,7 @@ export default function ClientLayout() {
         <div>
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Benvenuto,</p>
           <h1 className="text-lg font-bold text-slate-900 dark:text-white truncate max-w-[200px]">
-            {profile?.full_name?.split(' ')[0]}
+            {typeof profile?.full_name === 'string' ? profile.full_name.split(' ')[0] : ''}
           </h1>
         </div>
         <div className="flex items-center gap-2">

@@ -175,6 +175,44 @@ service cloud.firestore {
       allow read: if isAdmin() || isCollaborator();
       allow write: if isAdmin();
     }
+
+    // === NEW RULES v2.0 ===
+
+    // === CONTACTS ===
+    match /contacts/{contactId} {
+      allow read: if isAdmin() || isCollaborator();
+      allow write: if isAdmin();
+      // Le Cloud Functions scrivono tramite Admin SDK (bypassano le rules)
+    }
+
+    // === AGENT_SESSIONS ===
+    match /agent_sessions/{sessionId} {
+      // Lettura: admin, collaboratori, o se il session_token corrisponde
+      allow read: if isAdmin() || isCollaborator() || 
+        resource.data.session_token == request.auth.token.session_token;
+      // Creazione: chiunque può creare una sessione (il chatbot pubblico non è autenticato)
+      allow create: if true;
+      // Aggiornamento: solo admin/collaboratori (e Cloud Functions via Admin SDK)
+      allow update: if isAdmin() || isCollaborator();
+    }
+
+    // === APPOINTMENTS ===
+    match /appointments/{appointmentId} {
+      allow read: if isAdmin() || isCollaborator();
+      allow write: if isAdmin();
+    }
+
+    // === AVAILABILITY ===
+    match /availability/{docId} {
+      allow read: if true;  // pubblico — serve per mostrare slot disponibili
+      allow write: if isAdmin();
+    }
+
+    // === KNOWLEDGE_BASE ===
+    match /knowledge_base/{docId} {
+      allow read: if isAdmin() || isCollaborator();
+      allow write: if isAdmin();
+    }
   }
 }
 

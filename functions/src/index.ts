@@ -1,4 +1,4 @@
-﻿import { onSchedule } from "firebase-functions/v2/scheduler";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { onRequest } from "firebase-functions/v2/https";
 import { initializeApp } from "firebase-admin/app";
@@ -171,3 +171,10 @@ Sei il primo punto di contatto per potenziali clienti. Il tuo obiettivo e:
     }
   }
 );
+
+// ===== AI AGENT MULTI-AGENTE v2.0 =====
+export { agentMC } from './agent/agentMC';
+export { agentWebapp } from './agent/agentWebapp';
+export { sendAppointmentReminder, sendAppointmentFollowup } from './agent/followup';
+export { whatsappWebhook } from './agent/whatsappWebhook';
+export { transcribeAudio } from './agent/transcribeAudio';

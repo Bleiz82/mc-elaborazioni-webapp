@@ -3,7 +3,8 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, CalendarClock, CreditCard, 
   FolderOpen, Kanban, MessageSquare, UserCog, 
-  Bot, BarChart3, Settings, LogOut, Menu, X, Building2
+  Bot, BarChart3, Settings, LogOut, Menu, X, Building2,
+  Book, Clock
 } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import { logOut } from '../lib/firebase';
@@ -13,16 +14,18 @@ import { startOrchestrator, stopOrchestrator } from '../services/ai/orchestrator
 
 const navigation = [
   { name: 'Home', href: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Clients', href: '/admin/clients', icon: Users },
-  { name: 'Deadlines', href: '/admin/deadlines', icon: CalendarClock },
-  { name: 'Payments', href: '/admin/payments', icon: CreditCard },
-  { name: 'Documents', href: '/admin/documents', icon: FolderOpen },
-  { name: 'Practices', href: '/admin/practices', icon: Kanban },
-  { name: 'Communications', href: '/admin/communications', icon: MessageSquare },
-  { name: 'Collaborators', href: '/admin/collaborators', icon: UserCog },
-  { name: 'AI Subagents', href: '/admin/ai-subagents', icon: Bot },
-  { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
+  { name: 'Appuntamenti', href: '/admin/appointments', icon: CalendarClock },
+  { name: 'Leads AI', href: '/admin/leads', icon: Users },
+  { name: 'Inbox AI', href: '/admin/communications', icon: MessageSquare },
+  { name: 'Knowledge Base', href: '/admin/knowledge-base', icon: Book },
+  { name: 'Pratiche', href: '/admin/practices', icon: Kanban },
+  { name: 'Clienti', href: '/admin/clients', icon: Users },
+  { name: 'Scadenze', href: '/admin/deadlines', icon: Clock },
+  { name: 'Pagamenti', href: '/admin/payments', icon: CreditCard },
+  { name: 'Documenti', href: '/admin/documents', icon: FolderOpen },
+  { name: 'Report & AI', href: '/admin/ai-subagents', icon: Bot },
+  { name: 'Collaboratori', href: '/admin/collaborators', icon: UserCog },
+  { name: 'Impostazioni', href: '/admin/settings', icon: Settings },
 ];
 
 import NotificationBell from '../components/NotificationBell';

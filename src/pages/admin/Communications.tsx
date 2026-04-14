@@ -17,6 +17,7 @@ interface Conversation {
   client_name?: string;
   client_avatar?: string;
   unread_count?: number;
+  is_ai_active?: boolean;
 }
 
 interface Message {
@@ -158,6 +159,17 @@ export default function Communications() {
     }
   };
 
+  const toggleAIActive = async (id: string, active: boolean) => {
+    try {
+      await updateDoc(doc(db, 'conversations', id), {
+        is_ai_active: active
+      });
+      toast.info(active ? 'AI Autopilot attivato' : 'AI Autopilot disattivato');
+    } catch (error) {
+      toast.error('Errore durante la modifica');
+    }
+  };
+
   const activeConv = conversations.find(c => c.id === activeConvId);
   const filteredConvs = conversations.filter(c => 
     c.client_name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -217,7 +229,10 @@ export default function Communications() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-baseline mb-1">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate pr-2">{conv.client_name}</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate pr-2 flex items-center gap-1.5">
+                        {conv.is_ai_active ? <Bot className="w-3 h-3 text-sky-500" /> : <User className="w-3 h-3 text-slate-400 font-bold" />}
+                        {conv.client_name}
+                      </p>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 flex-shrink-0">
                         {format(safeDate(conv.last_message_at), 'dd/MM')}
                       </p>
@@ -251,11 +266,31 @@ export default function Communications() {
                   )}
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">{activeConv?.client_name}</h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    Ultimo msg: {activeConv ? format(safeDate(activeConv.last_message_at), 'dd MMM HH:mm', { locale: it }) : ''}
-                  </p>
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white leading-none">{activeConv?.client_name}</h2>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      Ultimo: {activeConv ? format(safeDate(activeConv.last_message_at), 'HH:mm', { locale: it }) : ''}
+                    </p>
+                    <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full" />
+                    <div className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Online</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <Bot className={`w-4 h-4 ${activeConv?.is_ai_active ? 'text-sky-500' : 'text-slate-400'}`} />
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase">AI Autopilot</span>
+                  <button 
+                    onClick={() => toggleAIActive(activeConv!.id, !activeConv?.is_ai_active)}
+                    className={`w-8 h-4 rounded-full relative transition-colors ${activeConv?.is_ai_active ? 'bg-sky-500' : 'bg-slate-300 dark:bg-slate-600'}`}
+                  >
+                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${activeConv?.is_ai_active ? 'left-[1.125rem]' : 'left-0.5'}`} />
+                  </button>
                 </div>
               </div>
             </div>

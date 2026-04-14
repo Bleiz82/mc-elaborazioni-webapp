@@ -29,8 +29,12 @@ import ClientPayments from './pages/client/Payments';
 import ClientChat from './pages/client/Chat';
 import ClientProfile from './pages/client/Profile';
 import Onboarding from './pages/auth/Onboarding';
-
 import ClientPractices from './pages/client/Practices';
+
+// New Admin Pages v2.0
+import Appointments from './pages/admin/Appointments';
+import Leads from './pages/admin/Leads';
+import KnowledgeBase from './pages/admin/KnowledgeBase';
 
 // Placeholder pages
 const Placeholder = ({ title }: { title: string }) => (
@@ -103,6 +107,9 @@ export default function App() {
             <Route path="documents" element={<AdminDocuments />} />
             <Route path="practices" element={<PracticesKanban />} />
             <Route path="communications" element={<Communications />} />
+            <Route path="appointments" element={<Appointments />} />
+            <Route path="leads" element={<Leads />} />
+            <Route path="knowledge-base" element={<KnowledgeBase />} />
             <Route path="collaborators" element={<AdminCollaborators />} />
             <Route path="ai-subagents" element={<AISubagents />} />
             <Route path="reports" element={<AdminReports />} />

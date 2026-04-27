@@ -1,25 +1,11 @@
-import { db, storage } from '../../../lib/firebase';
+import { db, storage, app } from '../../../lib/firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { ref, getBytes } from 'firebase/storage';
-import { GoogleGenAI } from '@google/genai';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { logActivity, getAdminUID } from '../utils';
-import { doc as firestoreDoc, getDoc } from 'firebase/firestore';
+import { callAI } from '../aiClient';
 
-// Recupera la Gemini API key da Firestore settings
-async function getGeminiApiKey(): Promise<string> {
-  try {
-    const snap = await getDoc(firestoreDoc(db, 'studio_settings', 'general'));
-    if (snap.exists()) {
-      const key = snap.data().gemini_api_key;
-      if (key) return key;
-    }
-  } catch (e) {
-    console.error('Error fetching Gemini key:', e);
-  }
-  const envKey = (import.meta as any).env.GEMINI_API_KEY;
-  if (envKey) return envKey;
-  throw new Error('Gemini API key non trovata');
-}
+const functions = getFunctions(app, 'europe-west1');
 
 // Determina il MIME type dal nome file
 function getMimeType(filename: string): string {
@@ -56,34 +42,7 @@ async function downloadFileAsBase64(storagePath: string): Promise<{ base64: stri
   return { base64, mimeType, filename };
 }
 
-export async function runAgentDocumenti(params: any) {
-  const { fullContext, documentId, documentData } = params;
-
-  // Può essere attivato dall'orchestratore (batch) o da evento singolo
-  const docsToProcess = documentId
-    ? [{ id: documentId, ...documentData }]
-    : (fullContext?.documents || []);
-
-  if (docsToProcess.length === 0) return;
-
-  const adminUID = await getAdminUID();
-  const apiKey = await getGeminiApiKey();
-  const ai = new GoogleGenAI({ apiKey });
-
-  for (const docItem of docsToProcess) {
-    if (docItem.status !== 'caricato') continue;
-
-    try {
-      let analysisContent: any;
-
-      // Controlla se il documento ha un path in Firebase Storage
-      const storagePath = docItem.storage_path || docItem.file_path || null;
-
-      if (storagePath) {
-        // --- OCR REALE: scarica e analizza con Gemini Vision ---
-        const { base64, mimeType, filename } = await downloadFileAsBase64(storagePath);
-
-        const prompt = `Sei un sistema OCR e classificatore di documenti per uno studio di consulenza aziendale italiano.
+const OCR_PROMPT = `Sei un sistema OCR e classificatore di documenti per uno studio di consulenza aziendale italiano.
 
 Analizza attentamente questo documento e rispondi SOLO con un JSON valido, senza markdown:
 {
@@ -104,30 +63,43 @@ Analizza attentamente questo documento e rispondi SOLO con un JSON valido, senza
   "testo_estratto": "testo grezzo estratto dal documento (max 500 caratteri)"
 }`;
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-flash-latest',
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                {
-                  inlineData: {
-                    mimeType: mimeType,
-                    data: base64
-                  }
-                },
-                { text: prompt }
-              ]
-            }
-          ]
+export async function runAgentDocumenti(params: any) {
+  const { fullContext, documentId, documentData } = params;
+
+  const docsToProcess = documentId
+    ? [{ id: documentId, ...documentData }]
+    : (fullContext?.documents || []);
+
+  if (docsToProcess.length === 0) return;
+
+  const adminUID = await getAdminUID();
+  const aiOcrProxy = httpsCallable<any, { text: string }>(functions, 'aiOcrProxy');
+
+  for (const docItem of docsToProcess) {
+    if (docItem.status !== 'caricato') continue;
+
+    try {
+      let analysisContent: any;
+
+      const storagePath = docItem.storage_path || docItem.file_path || null;
+
+      if (storagePath) {
+        // --- OCR REALE via Cloud Function sicura ---
+        const { base64, mimeType } = await downloadFileAsBase64(storagePath);
+
+        const result = await aiOcrProxy({
+          prompt: OCR_PROMPT,
+          fileBase64: base64,
+          mimeType: mimeType,
+          model: 'gemini-2.5-flash',
         });
 
-        const responseText = response.text || '';
+        const responseText = result.data.text || '';
         const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
         analysisContent = JSON.parse(cleanJson);
 
       } else {
-        // --- FALLBACK: analisi solo da metadati (nessun file in storage) ---
+        // --- FALLBACK: analisi solo da metadati via proxy sicuro ---
         const fallbackPrompt = `Analizza questo documento basandoti solo sui metadati disponibili.
 Nome file: ${docItem.name || 'sconosciuto'}
 Tipo: ${docItem.type || 'sconosciuto'}
@@ -152,9 +124,10 @@ Rispondi SOLO con JSON valido:
   "testo_estratto": null
 }`;
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-flash-latest',
-          contents: fallbackPrompt
+        const response = await callAI({
+          prompt: fallbackPrompt,
+          model: 'gemini-2.5-flash',
+          responseMimeType: 'application/json',
         });
 
         const responseText = response.text || '';
@@ -162,7 +135,6 @@ Rispondi SOLO con JSON valido:
         analysisContent = JSON.parse(cleanJson);
       }
 
-      // Determina lo stato in base alla confidence
       let newStatus = 'classificato';
       let adminNote = '';
       if (analysisContent.confidence >= 0.8) {
@@ -170,13 +142,12 @@ Rispondi SOLO con JSON valido:
         adminNote = `OCR completato con confidence ${Math.round(analysisContent.confidence * 100)}%`;
       } else if (analysisContent.confidence >= 0.5) {
         newStatus = 'in_revisione';
-        adminNote = `Classificazione incerta (${Math.round(analysisContent.confidence * 100)}%) — verificare manualmente`;
+        adminNote = `Classificazione incerta (${Math.round(analysisContent.confidence * 100)}%) - verificare manualmente`;
       } else {
         newStatus = 'da_rifare';
-        adminNote = 'Confidence troppo bassa — richiede revisione manuale';
+        adminNote = 'Confidence troppo bassa - richiede revisione manuale';
       }
 
-      // Aggiorna il documento su Firestore
       await updateDoc(doc(db, 'documents', docItem.id), {
         category: analysisContent.category || 'altro',
         metadata: analysisContent.extracted_info || {},
@@ -188,11 +159,10 @@ Rispondi SOLO con JSON valido:
         classified_at: new Date().toISOString()
       });
 
-      // Notifica admin
       await addDoc(collection(db, 'notifications'), {
         user_id: adminUID,
-        title: newStatus === 'da_rifare' ? '⚠️ Documento da Rivedere' : '📄 Documento Classificato',
-        message: `${docItem.name}: ${analysisContent.category} — ${adminNote}`,
+        title: newStatus === 'da_rifare' ? 'Documento da Rivedere' : 'Documento Classificato',
+        message: `${docItem.name}: ${analysisContent.category} - ${adminNote}`,
         type: 'document',
         link: '/admin/documents',
         is_read: false,
@@ -209,7 +179,6 @@ Rispondi SOLO con JSON valido:
     } catch (error) {
       console.error(`Agent Documenti OCR error for doc ${docItem.id}:`, error);
 
-      // In caso di errore aggiorna lo stato del documento
       try {
         await updateDoc(doc(db, 'documents', docItem.id), {
           status: 'errore_ocr',

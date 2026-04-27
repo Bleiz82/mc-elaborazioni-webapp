@@ -178,3 +178,7 @@ export { agentWebapp } from './agent/agentWebapp';
 export { sendAppointmentReminder, sendAppointmentFollowup } from './agent/followup';
 export { whatsappWebhook } from './agent/whatsappWebhook';
 export { transcribeAudio } from './agent/transcribeAudio';
+
+// AI Proxy sicuro
+export { aiProxy } from './aiProxy';
+export { aiOcrProxy } from './aiOcrProxy';
